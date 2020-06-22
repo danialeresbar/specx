@@ -13,49 +13,41 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
 
         # Diccionario con la configuración de la simulación
         self.data = {
-            "simulation_params": {
-                "sampling": self.sample_time.value(),
-                "threshold": self.threshold.value(),
-                "energy": self.energy_flag.isChecked(),
-                "usage": self.usage_flag.isChecked(),
+            "channel_1": {
+                "freq": self.channel_1_label.text(),
+                "box": self.pdf_1,
             },
-            "channels": {
-                "channel_1": {
-                    "freq": self.channel_1_label.text(),
-                    "box": self.pdf_1,
-                },
-                "channel_2": {
-                    "freq": self.channel_2_label.text(),
-                    "box": self.pdf_2,
-                },
-                "channel_3": {
-                    "freq": self.channel_3_label.text(),
-                    "box": self.pdf_3,
-                },
-                "channel_4": {
-                    "freq": self.channel_4_label.text(),
-                    "box": self.pdf_4,
-                },
-                "channel_5": {
-                    "freq": self.channel_5_label.text(),
-                    "box": self.pdf_5,
-                },
-                "channel_6": {
-                    "freq": self.channel_6_label.text(),
-                    "box": self.pdf_6,
-                },
-                "channel_7": {
-                    "freq": self.channel_7_label.text(),
-                    "box": self.pdf_7,
-                },
-                "channel_8": {
-                    "freq": self.channel_8_label.text(),
-                    "box": self.pdf_8,
-                },
-                "channel_9": {
-                    "freq": self.channel_9_label.text(),
-                    "box": self.pdf_9,
-                },
+            "channel_2": {
+                "freq": self.channel_2_label.text(),
+                "box": self.pdf_2,
+            },
+            "channel_3": {
+                "freq": self.channel_3_label.text(),
+                "box": self.pdf_3,
+            },
+            "channel_4": {
+                "freq": self.channel_4_label.text(),
+                "box": self.pdf_4,
+            },
+            "channel_5": {
+                "freq": self.channel_5_label.text(),
+                "box": self.pdf_5,
+            },
+            "channel_6": {
+                "freq": self.channel_6_label.text(),
+                "box": self.pdf_6,
+            },
+            "channel_7": {
+                "freq": self.channel_7_label.text(),
+                "box": self.pdf_7,
+            },
+            "channel_8": {
+                "freq": self.channel_8_label.text(),
+                "box": self.pdf_8,
+            },
+            "channel_9": {
+                "freq": self.channel_9_label.text(),
+                "box": self.pdf_9,
             },
         }
 
@@ -80,15 +72,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         self.pdf_8.activated.connect(self.raise_modal)
         self.pdf_9.activated.connect(self.raise_modal)
 
-    def run_sim(self):
+    def run_sim(self):        
         # Ventana de ejecución para el proceso de simulación
         sim_window = SimWindow(self)
-        sim_window.receive_data(self.data)
         sim_window.show()
         #self.run_button.setEnabled(self.run_condition())
 
     def raise_modal(self, index):
-        modal = ConfigDialog()
+        modal = ConfigDialog(self)
         config = modal.options.get(self.sender().currentIndex())
 
         if config:
@@ -96,7 +87,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             modal.exec()
 
             if modal.result() == 1:
-                for k,v in self.data.get("channels").items():
+                for k,v in self.data.items():
                     if self.sender() == v.get("box"):
                         v['parameters'] = modal.parameters.copy()
 
