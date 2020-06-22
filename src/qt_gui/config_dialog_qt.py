@@ -6,7 +6,7 @@ class Ui_config_dialog(object):
         config_dialog.setObjectName("config_dialog")
         config_dialog.resize(500, 500)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("icons/icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("../icons/icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         config_dialog.setWindowIcon(icon)
         config_dialog.setStyleSheet("* {\n"
 "    background: #191919;\n"
@@ -455,7 +455,7 @@ class Ui_config_dialog(object):
         self.submit_button.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.submit_button.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("icons/accept.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap("../icons/accept.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.submit_button.setIcon(icon1)
         self.submit_button.setIconSize(QtCore.QSize(60, 60))
         self.submit_button.setFlat(True)
@@ -473,7 +473,7 @@ class Ui_config_dialog(object):
         self.reject_button.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.reject_button.setText("")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("icons/reject.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap("../icons/reject.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.reject_button.setIcon(icon2)
         self.reject_button.setIconSize(QtCore.QSize(60, 60))
         self.reject_button.setFlat(True)

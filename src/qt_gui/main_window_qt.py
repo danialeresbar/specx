@@ -13,7 +13,7 @@ class Ui_main_window(object):
                 main_window.setSizePolicy(sizePolicy)
                 main_window.setMinimumSize(QtCore.QSize(600, 450))
                 icon = QtGui.QIcon()
-                icon.addPixmap(QtGui.QPixmap("icons/icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                icon.addPixmap(QtGui.QPixmap("../icons/icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 main_window.setWindowIcon(icon)
                 main_window.setStyleSheet("* {\n"
         "    background: #191919;\n"
@@ -398,7 +398,7 @@ class Ui_main_window(object):
         "}")
                 self.run_button.setText("")
                 icon1 = QtGui.QIcon()
-                icon1.addPixmap(QtGui.QPixmap("icons/run.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                icon1.addPixmap(QtGui.QPixmap("../icons/run.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.run_button.setIcon(icon1)
                 self.run_button.setIconSize(QtCore.QSize(110, 110))
                 self.run_button.setFlat(True)
@@ -417,7 +417,7 @@ class Ui_main_window(object):
         "}")
                 self.clean_button.setText("")
                 icon2 = QtGui.QIcon()
-                icon2.addPixmap(QtGui.QPixmap("icons/clean.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                icon2.addPixmap(QtGui.QPixmap("../icons/clean.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.clean_button.setIcon(icon2)
                 self.clean_button.setIconSize(QtCore.QSize(110, 110))
                 self.clean_button.setFlat(True)

@@ -60,6 +60,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         # Conexión de señales de los botones
         self.run_button.clicked.connect(self.run_sim)
         self.clean_button.clicked.connect(self.reset_fields)
+        
 
         # Conexión de los ComboBox al modal de parametrización
         self.pdf_1.activated.connect(self.raise_modal)
