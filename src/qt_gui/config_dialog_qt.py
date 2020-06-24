@@ -1,10 +1,18 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtChart import QChartView
 
 
 class Ui_config_dialog(object):
     def setupUi(self, config_dialog):
         config_dialog.setObjectName("config_dialog")
-        config_dialog.resize(500, 500)
+        config_dialog.resize(800, 400)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(config_dialog.sizePolicy().hasHeightForWidth())
+        config_dialog.setSizePolicy(sizePolicy)
+        config_dialog.setMinimumSize(QtCore.QSize(800, 400))
+        config_dialog.setMaximumSize(QtCore.QSize(800, 400))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("../icons/icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         config_dialog.setWindowIcon(icon)
@@ -23,6 +31,11 @@ class Ui_config_dialog(object):
 "}\n"
 "\n"
 "QCheckBox, QRadioButton {\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QCheckBox::disabled, QRadioButton:disabled {\n"
+"    color: #787878;\n"
 "    border: none;\n"
 "}\n"
 "\n"
@@ -139,10 +152,6 @@ class Ui_config_dialog(object):
 "\n"
 "QScrollBar::add-page, QScrollBar::sub-page {\n"
 "    background: none;\n"
-"}\n"
-"\n"
-"QAbstractButton:disabled {\n"
-"	color: #787878;\n"
 "}\n"
 "\n"
 "QAbstractButton:hover {\n"
@@ -281,11 +290,11 @@ class Ui_config_dialog(object):
 "QMenu::separator {\n"
 "    background: #353535;\n"
 "}")
-        #config_dialog.setModal(True)
-        self.dialog_layout = QtWidgets.QVBoxLayout(config_dialog)
-        self.dialog_layout.setContentsMargins(10, 10, 10, 10)
-        self.dialog_layout.setSpacing(5)
-        self.dialog_layout.setObjectName("dialog_layout")
+        config_dialog.setModal(True)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(config_dialog)
+        self.horizontalLayout_3.setContentsMargins(10, 10, 10, 10)
+        self.horizontalLayout_3.setSpacing(5)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.preview_box = QtWidgets.QGroupBox(config_dialog)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -297,17 +306,16 @@ class Ui_config_dialog(object):
         self.preview_box.setFont(font)
         self.preview_box.setObjectName("preview_box")
         self.view_layout = QtWidgets.QHBoxLayout(self.preview_box)
-        self.view_layout.setContentsMargins(10, 15, 10, 15)
+        self.view_layout.setContentsMargins(10, 15, 10, 10)
         self.view_layout.setSpacing(5)
         self.view_layout.setObjectName("view_layout")
-        self.plot_area = QtWidgets.QWidget(self.preview_box)
-        self.plot_area.setObjectName("plot_area")
-        self.view_layout.addWidget(self.plot_area)
-        self.dialog_layout.addWidget(self.preview_box)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setContentsMargins(5, 5, 5, 5)
-        self.horizontalLayout.setSpacing(10)
-        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.chart_view = QChartView()
+        self.view_layout.addWidget(self.chart_view)
+        self.horizontalLayout_3.addWidget(self.preview_box)
+        self.control_layout = QtWidgets.QVBoxLayout()
+        self.control_layout.setContentsMargins(10, 40, 10, 20)
+        self.control_layout.setSpacing(30)
+        self.control_layout.setObjectName("control_layout")
         self.param_box = QtWidgets.QGroupBox(config_dialog)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -319,7 +327,7 @@ class Ui_config_dialog(object):
         self.param_box.setFont(font)
         self.param_box.setObjectName("param_box")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.param_box)
-        self.verticalLayout.setContentsMargins(10, 15, 10, 5)
+        self.verticalLayout.setContentsMargins(10, 20, 10, 10)
         self.verticalLayout.setSpacing(5)
         self.verticalLayout.setObjectName("verticalLayout")
         self.row_1 = QtWidgets.QHBoxLayout()
@@ -327,12 +335,14 @@ class Ui_config_dialog(object):
         self.row_1.setSpacing(5)
         self.row_1.setObjectName("row_1")
         self.rb_1 = QtWidgets.QRadioButton(self.param_box)
+        self.rb_1.setEnabled(True)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.rb_1.setFont(font)
         self.rb_1.setObjectName("rb_1")
         self.row_1.addWidget(self.rb_1)
         self.rb_2 = QtWidgets.QRadioButton(self.param_box)
+        self.rb_2.setEnabled(True)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.rb_2.setFont(font)
@@ -356,6 +366,7 @@ class Ui_config_dialog(object):
         self.param_1_label.setObjectName("param_1_label")
         self.row_2.addWidget(self.param_1_label)
         self.param_1 = QtWidgets.QDoubleSpinBox(self.param_box)
+        self.param_1.setEnabled(True)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.param_1.setFont(font)
@@ -425,24 +436,15 @@ class Ui_config_dialog(object):
         self.row_5.setStretch(0, 40)
         self.row_5.setStretch(1, 60)
         self.verticalLayout.addLayout(self.row_5)
-        self.horizontalLayout.addWidget(self.param_box)
-        self.inner_layout = QtWidgets.QVBoxLayout()
-        self.inner_layout.setContentsMargins(0, 0, 0, 0)
-        self.inner_layout.setSpacing(5)
-        self.inner_layout.setObjectName("inner_layout")
-        self.back_icon = QtWidgets.QLabel(config_dialog)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.back_icon.sizePolicy().hasHeightForWidth())
-        self.back_icon.setSizePolicy(sizePolicy)
-        self.back_icon.setText("")
-        self.back_icon.setObjectName("back_icon")
-        self.inner_layout.addWidget(self.back_icon)
-        self.button_layout = QtWidgets.QHBoxLayout()
-        self.button_layout.setContentsMargins(0, 0, 0, 0)
-        self.button_layout.setSpacing(0)
-        self.button_layout.setObjectName("button_layout")
+        self.control_layout.addWidget(self.param_box)
+        self.button_container = QtWidgets.QVBoxLayout()
+        self.button_container.setContentsMargins(0, 0, 0, 0)
+        self.button_container.setSpacing(10)
+        self.button_container.setObjectName("button_container")
+        self.b_layout = QtWidgets.QHBoxLayout()
+        self.b_layout.setContentsMargins(40, 5, 40, 5)
+        self.b_layout.setSpacing(0)
+        self.b_layout.setObjectName("b_layout")
         self.submit_button = QtWidgets.QPushButton(config_dialog)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -460,7 +462,7 @@ class Ui_config_dialog(object):
         self.submit_button.setIconSize(QtCore.QSize(60, 60))
         self.submit_button.setFlat(True)
         self.submit_button.setObjectName("submit_button")
-        self.button_layout.addWidget(self.submit_button)
+        self.b_layout.addWidget(self.submit_button)
         self.reject_button = QtWidgets.QPushButton(config_dialog)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -478,18 +480,17 @@ class Ui_config_dialog(object):
         self.reject_button.setIconSize(QtCore.QSize(60, 60))
         self.reject_button.setFlat(True)
         self.reject_button.setObjectName("reject_button")
-        self.button_layout.addWidget(self.reject_button)
-        self.button_layout.setStretch(0, 50)
-        self.button_layout.setStretch(1, 50)
-        self.inner_layout.addLayout(self.button_layout)
-        self.inner_layout.setStretch(0, 60)
-        self.inner_layout.setStretch(1, 40)
-        self.horizontalLayout.addLayout(self.inner_layout)
-        self.horizontalLayout.setStretch(0, 60)
-        self.horizontalLayout.setStretch(1, 40)
-        self.dialog_layout.addLayout(self.horizontalLayout)
-        self.dialog_layout.setStretch(0, 60)
-        self.dialog_layout.setStretch(1, 40)
+        self.b_layout.addWidget(self.reject_button)
+        self.b_layout.setStretch(0, 50)
+        self.b_layout.setStretch(1, 50)
+        self.button_container.addLayout(self.b_layout)
+        self.button_container.setStretch(0, 40)
+        self.control_layout.addLayout(self.button_container)
+        self.control_layout.setStretch(0, 75)
+        self.control_layout.setStretch(1, 25)
+        self.horizontalLayout_3.addLayout(self.control_layout)
+        self.horizontalLayout_3.setStretch(0, 60)
+        self.horizontalLayout_3.setStretch(1, 40)
 
         self.retranslateUi(config_dialog)
         QtCore.QMetaObject.connectSlotsByName(config_dialog)

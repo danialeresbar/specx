@@ -6,9 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>500</height>
+    <width>800</width>
+    <height>400</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>400</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>800</width>
+    <height>400</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Configuración</string>
@@ -296,7 +314,7 @@ QMenu::separator {
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="dialog_layout" stretch="60,40">
+  <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="60,40">
    <property name="spacing">
     <number>5</number>
    </property>
@@ -342,7 +360,7 @@ QMenu::separator {
        <number>10</number>
       </property>
       <property name="bottomMargin">
-       <number>15</number>
+       <number>10</number>
       </property>
       <item>
        <widget class="QWidget" name="plot_area" native="true"/>
@@ -351,21 +369,21 @@ QMenu::separator {
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="60,40">
+    <layout class="QVBoxLayout" name="control_layout" stretch="70,30">
      <property name="spacing">
-      <number>10</number>
+      <number>30</number>
      </property>
      <property name="leftMargin">
-      <number>5</number>
+      <number>10</number>
      </property>
      <property name="topMargin">
-      <number>5</number>
+      <number>40</number>
      </property>
      <property name="rightMargin">
-      <number>5</number>
+      <number>10</number>
      </property>
      <property name="bottomMargin">
-      <number>5</number>
+      <number>20</number>
      </property>
      <item>
       <widget class="QGroupBox" name="param_box">
@@ -391,13 +409,13 @@ QMenu::separator {
          <number>10</number>
         </property>
         <property name="topMargin">
-         <number>15</number>
+         <number>20</number>
         </property>
         <property name="rightMargin">
          <number>10</number>
         </property>
         <property name="bottomMargin">
-         <number>5</number>
+         <number>10</number>
         </property>
         <item>
          <layout class="QHBoxLayout" name="row_1">
@@ -633,9 +651,9 @@ QMenu::separator {
       </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="inner_layout" stretch="60,40">
+      <layout class="QVBoxLayout" name="button_container" stretch="40">
        <property name="spacing">
-        <number>5</number>
+        <number>10</number>
        </property>
        <property name="leftMargin">
         <number>0</number>
@@ -650,37 +668,24 @@ QMenu::separator {
         <number>0</number>
        </property>
        <item>
-        <widget class="QLabel" name="back_icon">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="button_layout" stretch="50,50">
+        <layout class="QHBoxLayout" name="b_layout" stretch="50,50">
          <property name="spacing">
           <number>0</number>
          </property>
          <property name="leftMargin">
-          <number>0</number>
+          <number>40</number>
          </property>
          <property name="topMargin">
-          <number>0</number>
+          <number>5</number>
          </property>
          <property name="rightMargin">
-          <number>0</number>
+          <number>40</number>
          </property>
          <property name="bottomMargin">
-          <number>0</number>
+          <number>5</number>
          </property>
          <item>
-          <widget class="QPushButton" name="submit_button">
+          <widget class="QPushButton" name="submit_b">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -714,7 +719,7 @@ QMenu::separator {
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="reject_button">
+          <widget class="QPushButton" name="reject_b">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>

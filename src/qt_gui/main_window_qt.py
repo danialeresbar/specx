@@ -802,6 +802,7 @@ class Ui_main_window(object):
                 self.box_freq.setTitle(_translate("main_window", "Frecuencias"))
                 self.channel_1_label.setText(_translate("main_window", "473 MHz"))
                 self.pdf_1.setItemText(0, _translate("main_window", "Selecciona"))
+                self.pdf_1.setItemText(0, _translate("main_window", "Selecciona"))                
                 self.pdf_1.setItemText(1, _translate("main_window", "Bernoulli"))
                 self.pdf_1.setItemText(2, _translate("main_window", "Beta"))
                 self.pdf_1.setItemText(3, _translate("main_window", "Gamma"))

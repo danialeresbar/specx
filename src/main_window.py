@@ -1,7 +1,7 @@
-from PyQt5 import QtWidgets
-from qt_gui.main_window_qt import Ui_main_window
+from qt_gui.main_window_qt import Ui_main_window, QtWidgets
 from config_dialog import ConfigDialog
 from sim_window import SimWindow
+#from test import SimWindow
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
@@ -61,7 +61,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         self.run_button.clicked.connect(self.run_sim)
         self.clean_button.clicked.connect(self.reset_fields)
         
-
         # Conexión de los ComboBox al modal de parametrización
         self.pdf_1.activated.connect(self.raise_modal)
         self.pdf_2.activated.connect(self.raise_modal)
@@ -79,7 +78,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         sim_window.show()
         #self.run_button.setEnabled(self.run_condition())
 
-    def raise_modal(self, index):
+    def raise_modal(self):
         modal = ConfigDialog(self)
         config = modal.options.get(self.sender().currentIndex())
 
