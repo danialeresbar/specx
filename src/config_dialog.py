@@ -247,6 +247,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         self.chart.plot_lognorm()
         self.chart_view.setChart(self.chart)
         
+        
         self.options["update"] = 6
 
     def norm(self):

@@ -310,6 +310,7 @@ class Ui_config_dialog(object):
         self.view_layout.setSpacing(5)
         self.view_layout.setObjectName("view_layout")
         self.chart_view = QChartView()
+        self.chart_view.setRenderHint(QtGui.QPainter.Antialiasing)
         self.view_layout.addWidget(self.chart_view)
         self.horizontalLayout_3.addWidget(self.preview_box)
         self.control_layout = QtWidgets.QVBoxLayout()

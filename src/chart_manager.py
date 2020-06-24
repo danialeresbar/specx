@@ -246,7 +246,7 @@ class ChartDesign(QChart):
             )
                 
         if name:
-            self.file = QPixmap(chart_view.grab())
+            file = QPixmap(chart_view.grab())
             file.save(name, quality = 100)
 
             if file:
