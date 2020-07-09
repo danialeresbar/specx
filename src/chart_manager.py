@@ -35,7 +35,6 @@ class ChartDesign(QChart):
             self.zoomIn()
         else:
             self.zoomOut()
-        #self.scroll(event.delta()/40, event.delta()/40)
         event.accept()
 
     def plot_bar_chart(self):
@@ -51,9 +50,6 @@ class ChartDesign(QChart):
         self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_label_format="%.2f %",y_max=100, y_tickcount=4, legends=x, legend_alignment=Qt.AlignRight )
 
     def plot_bernoulli(self):
-        p = self.parameters.get("success")
-        q = self.parameters.get("fail")
-
         # Etiquetas para eje x
         legends = ["Probabilidad de\néxito", "Probabilidad de\nfallo"]
         x = ["Éxito", "Fallo"]
@@ -225,7 +221,7 @@ class ChartDesign(QChart):
         self.setTitleFont(self.font) 
 
     def save_chart(self, chart_view):
-        name, ext = QtWidgets.QFileDialog.getSaveFileName(
+        name, _ = QtWidgets.QFileDialog.getSaveFileName(
             self, "Guardar como",
             "chart",
             "JPG (*.jpg);;PNG (*.png)",
