@@ -24,12 +24,21 @@ class ChartDesign(QChart):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.setBackgroundRoundness(0)
         self.setTitle(self.title)
-        self.setTitleFont(self.font)
         self.setMargins(QMargins(15, 15, 15, 15))
         self.setAnimationOptions(QChart.SeriesAnimations)
-        self.setTheme(self.ChartThemeLight)
+        self.setTheme(self.ChartThemeDark)
+        self.setDropShadowEnabled(True)
+        self.setBackgroundBrush(QColor("#353941"))
 
-    def plot_bars(self):
+    def wheelEvent(self, event):
+        if event.delta() > 0:
+            self.zoomIn()
+        else:
+            self.zoomOut()
+        #self.scroll(event.delta()/40, event.delta()/40)
+        event.accept()
+
+    def plot_bar_chart(self):
         # Etiquetas para eje x
         x = list()
 
@@ -37,45 +46,9 @@ class ChartDesign(QChart):
             x.append(v.get("freq"))
         
         # Valores de prueba eje Y
-        values = [30]*9
-        
-        for index in range(len(values)):
-            series = QBarSeries()
+        bars = [30]*9
 
-            bar_set = QBarSet(x[index])
-            #bar_set.setColor(colores[index])
-            bar_set.setLabelColor(Qt.black)
-            bar_set.setLabelFont(self.font)
-            bar_set.append(values[index])
-            
-            series.append(bar_set)
-            series.setLabelsVisible(True)
-            #series.setLabelsAngle(-90)
-            series.setLabelsFormat("@value %")
-            if values[index] < 20:
-                series.setLabelsPosition(QAbstractBarSeries.LabelsOutsideEnd)
-
-            else:
-                series.setLabelsPosition(QAbstractBarSeries.LabelsCenter)
-            self.addSeries(series)
-        
-
-        self.createDefaultAxes()
-        axis_x = self.axes(Qt.Horizontal)[0]
-        self.removeAxis(axis_x)
-        axis_x = QBarCategoryAxis()
-        axis_x.append(x)
-        self.addAxis(axis_x, Qt.AlignBottom)
-        axis_x.setLabelsFont(self.font)
-        axis_y = self.axes(Qt.Vertical, series)[0]
-        axis_y.setRange(0, 100)
-        axis_y.setTickCount(5)
-        axis_y.setLabelFormat("%.2f %")
-        axis_y.setLabelsFont(self.font)
-
-        self.legend().setFont(self.font)
-        self.legend().setVisible(True)
-        self.legend().setAlignment(Qt.AlignRight)
+        self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_label_format="%.2f %",y_max=100, y_tickcount=4, legends=x, legend_alignment=Qt.AlignRight )
 
     def plot_bernoulli(self):
         p = self.parameters.get("success")
@@ -84,44 +57,10 @@ class ChartDesign(QChart):
         # Etiquetas para eje x
         legends = ["Probabilidad de\néxito", "Probabilidad de\nfallo"]
         x = ["Éxito", "Fallo"]
-        y = [self.parameters.get("success"), self.parameters.get("fail")]
+        bars = [self.parameters.get("success"), self.parameters.get("fail")]
         bar_colors = [QColorConstants.Svg.lightgreen, QColorConstants.Svg.indianred]
 
-        for index in range(len(x)):
-            series = QBarSeries()
-
-            bar_set = QBarSet(legends[index])
-            bar_set.setColor(bar_colors[index])
-            bar_set.setLabelColor(Qt.black)
-            bar_set.setLabelFont(self.font)
-            bar_set.append(y[index])
-            
-            series.append(bar_set)
-            series.setLabelsVisible(True)
-            if y[index] < 0.1:
-                series.setLabelsPosition(QAbstractBarSeries.LabelsOutsideEnd)
-
-            else:
-                series.setLabelsPosition(QAbstractBarSeries.LabelsCenter)
-            
-            self.addSeries(series)
-        
-        self.createDefaultAxes()
-        axis_x = self.axes(Qt.Horizontal)[0]
-        self.removeAxis(axis_x)
-        axis_x = QBarCategoryAxis()
-        axis_x.append(x)
-        self.addAxis(axis_x, Qt.AlignBottom)
-        axis_x.setLabelsFont(self.font)
-        axis_y = self.axes(Qt.Vertical, series)[0]
-        axis_y.setRange(0, 1)
-        axis_y.setTickCount(5)
-        #axis_y.setLabelFormat("%.2f %")
-        axis_y.setLabelsFont(self.font)
-
-        self.legend().setFont(self.font)
-        self.legend().setVisible(True)
-        self.legend().setAlignment(Qt.AlignTop)
+        self.add_bars(x=x, bars=bars, bar_colors=bar_colors, bar_label_format="@value", y_label_format="", y_max=1, y_tickcount=5, legends=legends, legend_alignment=Qt.AlignTop)
 
     def plot_beta(self):
         alpha = self.parameters.get("alpha")
@@ -225,17 +164,65 @@ class ChartDesign(QChart):
         serie = QSplineSeries()
         serie.setName("γ={:.4f}, α={:.4f}, μ={:.4f}".format(gamma, alpha, mu))
         self.add_spline_series(serie, x, y)
+
+    def dynamic_spline(self):
+        pass
         
     def add_spline_series(self, serie, x, y):
         for index in range(len(y)):
             serie.append(x[index], y[index])
 
+        pen = serie.pen()
+        pen.setColor(QColor("#5f85db"))
+        pen.setWidth(3)
+        serie.setPen(pen)
         self.addSeries(serie)
         self.createDefaultAxes()
-        self.axes(Qt.Vertical, serie)[0].setRange(0, max(y)+0.01)
+        self.axes(Qt.Vertical, serie)[0].setRange(0, max(y)+0.05)
         self.legend().setFont(self.font)
         self.legend().setVisible(True)
         self.legend().setMarkerShape(QLegend.MarkerShapeFromSeries)
+        self.setTitleFont(self.font)
+
+    def add_bars(self, x, bars, bar_colors, bar_label_format, y_label_format, y_max, y_tickcount, legends, legend_alignment):
+        for index in range(len(bars)):
+            series = QBarSeries()
+
+            bar_set = QBarSet(legends[index])
+            if bar_colors:
+                bar_set.setColor(bar_colors[index])
+
+            bar_set.setLabelColor(Qt.black)
+            bar_set.setLabelFont(self.font)
+            bar_set.append(bars[index])
+            
+            series.append(bar_set)
+            series.setLabelsVisible(True)
+            series.setLabelsFormat(bar_label_format)
+            if bars[index] < y_max*0.2:
+                series.setLabelsPosition(QAbstractBarSeries.LabelsOutsideEnd)
+
+            else:
+                series.setLabelsPosition(QAbstractBarSeries.LabelsCenter)
+            self.addSeries(series)
+
+        self.createDefaultAxes()
+        axis_x = self.axes(Qt.Horizontal)[0]
+        self.removeAxis(axis_x)
+        axis_x = QBarCategoryAxis()
+        axis_x.append(x)
+        self.addAxis(axis_x, Qt.AlignBottom)
+        axis_x.setLabelsFont(self.font)
+        axis_y = self.axes(Qt.Vertical, series)[0]
+        axis_y.setRange(0, y_max)
+        axis_y.setTickCount(y_tickcount)
+        axis_y.setLabelFormat(y_label_format)
+        axis_y.setLabelsFont(self.font)
+
+        self.legend().setFont(self.font)
+        #self.legend().setVisible(True)
+        self.legend().setAlignment(legend_alignment)
+        self.setTitleFont(self.font) 
 
     def save_chart(self, chart_view):
         name, ext = QtWidgets.QFileDialog.getSaveFileName(

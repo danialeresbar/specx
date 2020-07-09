@@ -3,7 +3,7 @@ from PyQt5.QtGui import QFont, QIcon, QPainter, QPixmap, QColor
 from PyQt5.QtCore import Qt, QMargins
 from qt_gui.sim_window_qt import Ui_sim_window, QtWidgets
 from chart_manager import ChartDesign
-from key import DynamicSpline
+#from key import DynamicSpline
 
 
 class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
@@ -12,6 +12,8 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
 
         # Construye la interfaz diseñada con qt
         self.setupUi(self)
+
+        
 
         self.build_simulation()
 
@@ -48,7 +50,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
             font_size=10
         )
 
-        self.chart.plot_bars()
+        self.chart.plot_bar_chart()
         self.chart_bars.setChart(self.chart)
 
         """chart_1 = DynamicSpline()

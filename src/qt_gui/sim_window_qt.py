@@ -18,7 +18,7 @@ class Ui_sim_window(object):
         icon.addPixmap(QtGui.QPixmap("../icons/icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         sim_window.setWindowIcon(icon)
         sim_window.setStyleSheet("* {\n"
-"    background: #191919;\n"
+"    background: #26282b;\n"
 "    color: #DDDDDD;\n"
 "    border: 1px solid #5A5A5A;\n"
 "}\n"

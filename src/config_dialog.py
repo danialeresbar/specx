@@ -126,7 +126,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_2_label.setText("Parámetro de\nforma beta:")
             self.param_2.setMinimum(0.01)
             self.param_3_label.setText("Parámetro de\nubicación:")
-            self.param_3.setMinimum(-1000000)
+            self.param_3.setMinimum(-1000)
             self.param_4_label.setText("Parámetro de\nescala:")
             self.param_4.setMinimum(0.01)
 
@@ -325,11 +325,11 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.show_radio_buttons(False, True, True)
             self.set_visible_params(True, True, False, False)
             self.param_1_label.setText("Parámetro de\nforma:")
-            self.param_1.setMinimum(0.01)
+            self.param_1.setMinimum(0.15)
             self.param_2_label.setText("Parámetro de\nescala:")
-            self.param_2.setMinimum(0.01)
+            self.param_2.setMinimum(0.15)
             self.param_3_label.setText("Parámetro de\nubicación:")
-            self.param_3.setMinimum(0)
+            self.param_3.setMinimum(0.01)
 
         self.chart = ChartDesign(
             title="Función de densidad de probabilidad",
