@@ -1,9 +1,6 @@
-from PyQt5.QtChart import QChart, QChartView, QBarCategoryAxis, QBarSeries, QBarSet, QValueAxis, QAbstractBarSeries, QLegend
-from PyQt5.QtGui import QFont, QIcon, QPainter, QPixmap, QColor
-from PyQt5.QtCore import Qt, QMargins
 from qt_gui.sim_window_qt import Ui_sim_window, QtWidgets
 from chart_manager import ChartDesign
-#from key import DynamicSpline
+# from key import DynamicSpline
 
 
 class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
@@ -13,21 +10,25 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         # Construye la interfaz diseñada con qt
         self.setupUi(self)
 
-        
-
         self.build_simulation()
 
         # Conexión de señales de los botones
-        #self.save_chart_button.clicked.connect(self.chart.save_chart)
+        # self.save_chart_button.clicked.connect(self.chart.save_chart)
 
     # Sobre-escritura del método closeEvent para el cierre de la app
     def closeEvent(self, event):
-        """close = QtWidgets.QMessageBox.information(self, 'Salir', "Seguro que desea cerrar la ventana\nde simulación?", QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
+        close = QtWidgets.QMessageBox.information(
+            self,
+            'Salir',
+            "Seguro que desea cerrar la ventana de simulación?",
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+            QtWidgets.QMessageBox.No
+        )
         if close == QtWidgets.QMessageBox.Yes:
             event.accept()
-        
+
         else:
-            event.ignore()"""
+            event.ignore()
         event.accept()
 
     # Prepara el escenario de simulación
@@ -35,7 +36,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.data = self.parent().data.copy()
         """for k, v in self.data.items():
             print("{} --> {}".format(k, v))"""
-        
+
         self.sim_parameters = {
             "sampling": self.parent().sample_time.value(),
             "threshold": self.parent().threshold.value(),
@@ -43,7 +44,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
             "usage": self.parent().usage_flag.isChecked(),
         }
 
-        # Construimos el gráfico de barras con los porcentajes de ocupación en los canales
+        # Gráfico de barras con los porcentajes de ocupación de los canales
         self.chart = ChartDesign(
             title="%  Ocupación de los canales TDT",
             parameters=self.data,
@@ -60,7 +61,6 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         chart_1.setBackgroundRoundness(0)
         chart_1.setMargins(QMargins(0, 0, 0, 0))
         chart_1.setAnimationOptions(QChart.SeriesAnimations)
-        
 
         chart_2 = DynamicSpline()
         #chart_2.setTitle("Gráfico de prueba")

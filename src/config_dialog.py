@@ -5,11 +5,11 @@ from chart_manager import ChartDesign
 class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
     def __init__(self, *args, obj=None, **kwargs):
         super(ConfigDialog, self).__init__(*args, **kwargs)
-        
+
         # Construye la interfaz diseñada con qt
         self.setupUi(self)
 
-        # Diccionario de opciones para configuración del diálogo
+        # Diccionario de opciones para la configuración del modal
         self.options = {
             1: self.bernoulli,
             2: self.beta,
@@ -29,6 +29,8 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         # Lista para almacenar los valores de los parámetros
         self.parameters = list()
 
+        # Gráfico con la vista preliminar de la función de densidad
+        # de probabilidad de la distribución parametrizada
         self.chart = ChartDesign()
 
         # Conexión de las señales de los botones
@@ -44,15 +46,15 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         self.param_3.valueChanged.connect(self.update_plot)
         self.param_4.valueChanged.connect(self.update_plot)
 
-    # Sobre-escritura del método closeEvent para el cierre del cuadro de diálogo
-    def closeEvent(self, event):        
+    # Sobre-escritura del método closeEvent
+    def closeEvent(self, event):
         self.reject()
         event.accept()
 
     def default_param_values(self):
         self.param_1.setValue(0.5)
-        self.param_2.setValue(0.5)
-        self.param_3.setValue(0.5)
+        self.param_2.setValue(0.2)
+        self.param_3.setValue(0.2)
         self.param_4.setValue(0.5)
 
     def pick_values(self):
@@ -60,7 +62,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         for param in params:
             if param.isVisible():
                 self.parameters.append(param.value())
-        
+
         self.accept()
 
     def show_radio_buttons(self, f1, f2, f3):
@@ -82,7 +84,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         btn = self.sender()
         if btn.isChecked() and btn.text() == "1P":
             self.set_visible_params(True, False, False, False)
-            
+
         elif btn.isChecked() and btn.text() == "2P":
             self.set_visible_params(True, True, False, False)
 
@@ -93,9 +95,9 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         for k, v in self.options.items():
             if self.options.get("update") == k:
                 v()
-    
+
     def bernoulli(self):
-        if not "update" in self.options.keys():
+        if "update" not in self.options.keys():
             self.show_radio_buttons(False, False, False)
             self.set_visible_params(True, False, False, False)
             self.param_1_label.setText("Probabilidad\nde exito:")
@@ -111,14 +113,15 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             font_size=10
         )
 
-        # Vista preliminar
+        # Vista preliminar de la función de desidad
+        # de probabilidad interactiva
         self.chart.plot_bernoulli()
         self.chart_view.setChart(self.chart)
 
         self.options["update"] = 1
 
     def beta(self):
-        if not "update" in self.options.keys():
+        if "update" not in self.options.keys():
             self.show_radio_buttons(False, False, False)
             self.set_visible_params(True, True, True, True)
             self.param_1_label.setText("Parámetro de\nforma alpha:")
@@ -141,14 +144,15 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             font_size=10
         )
 
-        # Vista preliminar
+        # Vista preliminar de la función de desidad
+        # de probabilidad interactiva
         self.chart.plot_beta()
         self.chart_view.setChart(self.chart)
 
         self.options["update"] = 2
 
     def gamma(self):
-        if not "update" in self.options.keys():
+        if "update" not in self.options.keys():
             self.show_radio_buttons(False, True, True)
             self.set_visible_params(True, True, False, False)
             self.param_1_label.setText("Parámetro de\nforma:")
@@ -167,15 +171,16 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             },
             font_size=10
         )
-        
-        # Vista preliminar
+
+        # Vista preliminar de la función de desidad
+        # de probabilidad interactiva
         self.chart.plot_gamma()
         self.chart_view.setChart(self.chart)
-        
+
         self.options["update"] = 3
 
     def gumbel(self):
-        if not "update" in self.options.keys():
+        if "update" not in self.options.keys():
             self.show_radio_buttons(False, False, False)
             self.set_visible_params(True, True, False, False)
             self.param_1_label.setText("Parámetro de\nubicación:")
@@ -191,15 +196,16 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             },
             font_size=10
         )
-        
-        # Vista preliminar
+
+        # Vista preliminar de la función de desidad
+        # de probabilidad interactiva
         self.chart.plot_gumbel()
         self.chart_view.setChart(self.chart)
-        
+
         self.options["update"] = 4
 
     def laplace(self):
-        if not "update" in self.options.keys():
+        if "update" not in self.options.keys():
             self.show_radio_buttons(False, False, False)
             self.set_visible_params(True, True, False, False)
             self.param_1_label.setText("Parámetro de\nubicación:")
@@ -215,15 +221,16 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             },
             font_size=10
         )
-        
-        # Vista preliminar
+
+        # Vista preliminar de la función de desidad
+        # de probabilidad interactiva
         self.chart.plot_laplace()
         self.chart_view.setChart(self.chart)
-        
+
         self.options["update"] = 5
 
     def lognormal(self):
-        if not "update" in self.options.keys():
+        if "update" not in self.options.keys():
             self.show_radio_buttons(False, True, True)
             self.set_visible_params(True, True, False, False)
             self.param_1_label.setText("Parámetro de\nubicación:")
@@ -242,23 +249,23 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             },
             font_size=10
         )
-        
-        # Vista preliminar
+
+        # Vista preliminar de la función de desidad
+        # de probabilidad interactiva
         self.chart.plot_lognorm()
         self.chart_view.setChart(self.chart)
-        
-        
+
         self.options["update"] = 6
 
     def norm(self):
-        if not "update" in self.options.keys():
+        if "update" not in self.options.keys():
             self.show_radio_buttons(False, False, False)
             self.set_visible_params(True, True, False, False)
             self.param_1_label.setText("Parámetro de\nubicación:")
             self.param_1.setMinimum(0)
             self.param_2_label.setText("Parámetro de\nforma:")
             self.param_2.setMinimum(0.01)
-        
+
         self.chart = ChartDesign(
             title="Función de densidad de probabilidad",
             parameters={
@@ -267,15 +274,16 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             },
             font_size=10
         )
-        
-        # Vista preliminar
+
+        # Vista preliminar de la función de desidad
+        # de probabilidad interactiva
         self.chart.plot_norm()
         self.chart_view.setChart(self.chart)
-        
+
         self.options["update"] = 7
 
     def rayleigh(self):
-        if not "update" in self.options.keys():
+        if "update" not in self.options.keys():
             self.show_radio_buttons(True, True, False)
             self.set_visible_params(True, False, False, False)
             self.param_1_label.setText("Parámetro de\nescala:")
@@ -291,19 +299,21 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             },
             font_size=10
         )
-        
-        # Vista preliminar
+
+        # Vista preliminar de la función de desidad
+        # de probabilidad interactiva
         self.chart.plot_rayleigh()
         self.chart_view.setChart(self.chart)
-        
+
         self.options["update"] = 8
 
     def uniform(self):
-        if not "update" in self.options.keys():
+        if "update" not in self.options.keys():
             self.show_radio_buttons(False, False, False)
             self.set_visible_params(True, True, False, False)
             self.param_1_label.setText("Parámetro de\ncota inferior:")
             self.param_2_label.setText("Parámetro de\ncota superior:")
+            print("{} {}".format(self.param_1.value(), self.param_2.value()))
 
         self.chart = ChartDesign(
             title="Función de densidad de probabilidad",
@@ -313,15 +323,16 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             },
             font_size=10
         )
-        
-        # Vista preliminar
+
+        # Vista preliminar de la función de desidad
+        # de probabilidad interactiva
         self.chart.plot_uniform()
         self.chart_view.setChart(self.chart)
-        
+
         self.options["update"] = 9
 
     def weibull(self):
-        if not "update" in self.options.keys():
+        if "update" not in self.options.keys():
             self.show_radio_buttons(False, True, True)
             self.set_visible_params(True, True, False, False)
             self.param_1_label.setText("Parámetro de\nforma:")
@@ -340,9 +351,10 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             },
             font_size=10
         )
-        
-        # Vista preliminar
+
+        # Vista preliminar de la función de desidad
+        # de probabilidad interactiva
         self.chart.plot_weibull()
         self.chart_view.setChart(self.chart)
-        
-        self.options["update"] = 10        
+
+        self.options["update"] = 10

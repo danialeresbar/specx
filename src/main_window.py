@@ -1,7 +1,7 @@
 from qt_gui.main_window_qt import Ui_main_window, QtWidgets
 from config_dialog import ConfigDialog
 from sim_window import SimWindow
-#from test import SimWindow
+# from test import SimWindow
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
@@ -55,12 +55,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         self.new_action_menu.triggered.connect(self.new_sim)
         self.exit_action_menu.triggered.connect(self.close)
         self.about_action_menu.triggered.connect(self.about)
-        #self.help_action_menu.triggered.connect()
+        # self.help_action_menu.triggered.connect()
 
         # Conexión de señales de los botones
         self.run_button.clicked.connect(self.run_sim)
         self.clean_button.clicked.connect(self.reset_fields)
-        
+
         # Conexión de los ComboBox al modal de parametrización
         self.pdf_1.activated.connect(self.raise_modal)
         self.pdf_2.activated.connect(self.raise_modal)
@@ -72,11 +72,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         self.pdf_8.activated.connect(self.raise_modal)
         self.pdf_9.activated.connect(self.raise_modal)
 
-    def run_sim(self):        
+    def run_sim(self):
         # Ventana de ejecución para el proceso de simulación
         sim_window = SimWindow(self)
         sim_window.show()
-        #self.run_button.setEnabled(self.run_condition())
+        # self.run_button.setEnabled(self.run_condition())
 
     def raise_modal(self):
         modal = ConfigDialog(self)
@@ -87,7 +87,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             modal.exec()
 
             if modal.result() == 1:
-                for k,v in self.data.items():
+                for k, v in self.data.items():
                     if self.sender() == v.get("box"):
                         v['parameters'] = modal.parameters.copy()
 
@@ -102,12 +102,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
 
     # Sobre-escritura del método closeEvent para el cierre de la app
     def closeEvent(self, event):
-        """close = QtWidgets.QMessageBox.information(self, 'Salir', "Estás seguro que deseas salir?", QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
+        close = QtWidgets.QMessageBox.information(
+            self,
+            'Salir',
+            "Estás seguro que deseas salir?",
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+            QtWidgets.QMessageBox.No
+        )
         if close == QtWidgets.QMessageBox.Yes:
             event.accept()
-        
+
         else:
-            event.ignore()"""
+            event.ignore()
         event.accept()
 
     def reset_fields(self):
@@ -131,6 +137,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
                 return False
 
         return True
+
 
 # Arranque de la aplicación
 if __name__ == "__main__":
