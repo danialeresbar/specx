@@ -58,7 +58,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         # self.help_action_menu.triggered.connect()
 
         # Conexión de señales de los botones
-        self.run_button.clicked.connect(self.run_sim)
+        self.run_button.clicked.connect(self.open_simulation)
         self.clean_button.clicked.connect(self.reset_fields)
 
         # Conexión de los ComboBox al modal de parametrización
@@ -72,8 +72,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         self.pdf_8.activated.connect(self.raise_modal)
         self.pdf_9.activated.connect(self.raise_modal)
 
-    def run_sim(self):
+    def open_simulation(self):
         # Ventana de ejecución para el proceso de simulación
+        self.data["parameters"] = {
+            "sampling": self.sample_time.value(),
+            "threshold": self.threshold.value(),
+            "energy": self.energy_flag.isChecked(),
+            "usage": self.usage_flag.isChecked(),
+        }
         sim_window = SimWindow(self)
         sim_window.show()
         # self.run_button.setEnabled(self.run_condition())
@@ -89,7 +95,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             if modal.result() == 1:
                 for k, v in self.data.items():
                     if self.sender() == v.get("box"):
-                        v['parameters'] = modal.parameters.copy()
+                        v["distribution"] = self.sender().currentText()
+                        v["parameters"] = modal.parameters.copy()
 
                 del modal.parameters[:]
                 self.run_button.setEnabled(self.run_condition())
@@ -104,7 +111,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
     def closeEvent(self, event):
         close = QtWidgets.QMessageBox.information(
             self,
-            'Salir',
+            "Salir",
             "Estás seguro que deseas salir?",
             QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
             QtWidgets.QMessageBox.No

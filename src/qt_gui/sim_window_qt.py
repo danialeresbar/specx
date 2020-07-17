@@ -614,7 +614,7 @@ class Ui_sim_window(object):
     def retranslateUi(self, sim_window):
         _translate = QtCore.QCoreApplication.translate
         sim_window.setWindowTitle(_translate("sim_window", "Simulation"))
-        self.time_speed_label.setText(_translate("sim_window", "X10"))
+        self.time_speed_label.setText(_translate("sim_window", "X1"))
         self.save_chart_button.setText(_translate("sim_window", "save"))
         self.channel_label_1.setText(_translate("sim_window", "Canal 1:"))
         self.channel_label_2.setText(_translate("sim_window", "Canal 2:"))
