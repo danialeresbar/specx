@@ -90,6 +90,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         else:
             self.thread.stop()
         self._sim_button_mannager(True, False, False)
+        self.default_speed()
 
     def get_speed_value(self):
         return self.speed

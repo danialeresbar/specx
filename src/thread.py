@@ -7,6 +7,7 @@ class GeneratorThread(threading.Thread):
     def __init__(self, target=None, name=None, args=(), kwargs=None):
         threading.Thread.__init__(self, target=target, name=name)
         self.data = kwargs.copy()
+        self.settings = self.data.get("parameters")
         self.wait = target
         self.name = name
         self.pause_cond = threading.Condition(threading.Lock())
@@ -16,15 +17,14 @@ class GeneratorThread(threading.Thread):
 
     def run(self):
         '''Generación de VA y actualización de gráficas'''
-        limit = self.data["parameters"].get("sampling")*30
-        print(
-            "Hola estamos en {} Debo generar {} VA".format(
-                self.name,
-                limit
-            )
-        )
+        # limit = self.settings.get("sampling")*30
+        # threshold = self.settings.get("threshold")
+        channels = [channel for channel in self.data.values()]
+        # for k, v in self.data.items():
+        #     print("{} --> {}".format(k, v))
 
-        for _ in range(limit):
+        for channel in channels:
+            print(channel)
             with self.stop_cond:
                 if self.stopped:
                     break
