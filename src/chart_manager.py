@@ -49,7 +49,9 @@ class ChartDesign(QChart):
         x = list()
 
         for k, v in self.parameters.items():
-            x.append(v.get("freq"))
+            x.append(v.get("frequency"))
+
+        print(len(x))
 
         # Valores de prueba eje Y
         bars = [30]*9
@@ -184,11 +186,11 @@ class ChartDesign(QChart):
         a = self.parameters.get("inf")
         b = self.parameters.get("sup")
         x = np.linspace(
-            stats.uniform.ppf(0.01, loc=a, scale=b-a),
-            stats.uniform.ppf(0.99, loc=a, scale=b-a),
+            stats.uniform.ppf(0.01, loc=a, scale=b),
+            stats.uniform.ppf(0.99, loc=a, scale=b),
             100
         )
-        y = stats.uniform.pdf(x, loc=a, scale=b-a)
+        y = stats.uniform.pdf(x, loc=a, scale=b)
 
         # Serie con los valores (x,y)
         serie = QSplineSeries()

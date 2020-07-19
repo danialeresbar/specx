@@ -1,6 +1,7 @@
-from qt_gui.main_window_qt import Ui_main_window, QtWidgets
 from config_dialog import ConfigDialog
 import generators as gen
+import json_manager as manager
+from qt_gui.main_window_qt import Ui_main_window, QtWidgets
 from sim_window import SimWindow
 
 
@@ -9,47 +10,57 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)  # Construye la interfaz diseñada con qt
 
-        # Diccionario con la configuración para la simulación
+        self.__boxes = [
+            self.pdf_1,
+            self.pdf_2,
+            self.pdf_3,
+            self.pdf_4,
+            self.pdf_5,
+            self.pdf_6,
+            self.pdf_7,
+            self.pdf_8,
+            self.pdf_9
+        ]
+
         self.data = {
             "channel_1": {
-                "freq": self.channel_1_label.text(),
-                "box": self.pdf_1,
+                "id": 1,
+                "frequency": self.channel_1_label.text(),
             },
             "channel_2": {
-                "freq": self.channel_2_label.text(),
-                "box": self.pdf_2,
+                "id": 2,
+                "frequency": self.channel_2_label.text(),
             },
             "channel_3": {
-                "freq": self.channel_3_label.text(),
-                "box": self.pdf_3,
+                "id": 3,
+                "frequency": self.channel_3_label.text(),
             },
             "channel_4": {
-                "freq": self.channel_4_label.text(),
-                "box": self.pdf_4,
+                "id": 4,
+                "frequency": self.channel_4_label.text(),
             },
             "channel_5": {
-                "freq": self.channel_5_label.text(),
-                "box": self.pdf_5,
+                "id": 5,
+                "frequency": self.channel_5_label.text(),
             },
             "channel_6": {
-                "freq": self.channel_6_label.text(),
-                "box": self.pdf_6,
+                "id": 6,
+                "frequency": self.channel_6_label.text(),
             },
             "channel_7": {
-                "freq": self.channel_7_label.text(),
-                "box": self.pdf_7,
+                "id": 7,
+                "frequency": self.channel_7_label.text(),
             },
             "channel_8": {
-                "freq": self.channel_8_label.text(),
-                "box": self.pdf_8,
+                "id": 8,
+                "frequency": self.channel_8_label.text(),
             },
             "channel_9": {
-                "freq": self.channel_9_label.text(),
-                "box": self.pdf_9,
+                "id": 9,
+                "frequency": self.channel_9_label.text(),
             },
         }
 
-        # Diccionario con los generadores de las variables aleatorias
         self.generators = {
             "Bernoulli": gen.bernoulli,
             "Beta": gen.beta,
@@ -64,29 +75,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         }
 
         # Conexión de las señales de los menús
-        self.new_action_menu.triggered.connect(self.new_sim)
+        self.new_action_menu.triggered.connect(self.__new_sim)
         self.exit_action_menu.triggered.connect(self.close)
-        self.about_action_menu.triggered.connect(self.about)
+        self.about_action_menu.triggered.connect(self.__about)
         # self.help_action_menu.triggered.connect()
 
         # Conexión de señales de los botones
-        self.run_button.clicked.connect(self.start_simulation)
-        self.clean_button.clicked.connect(self.reset_fields)
-        self.save_file_button.clicked.connect(self.save_config_as_json)
-        self.load_file_button.clicked.connect(self.load_config)
+        self.run_button.clicked.connect(self.__start_simulation)
+        self.clean_button.clicked.connect(self.__reset_fields)
+        self.save_file_button.clicked.connect(self.__save_config_file_as_json)
+        self.load_file_button.clicked.connect(self.__load_config_file)
 
         # Conexión de los ComboBox al modal de parametrización
-        self.pdf_1.activated.connect(self.raise_modal)
-        self.pdf_2.activated.connect(self.raise_modal)
-        self.pdf_3.activated.connect(self.raise_modal)
-        self.pdf_4.activated.connect(self.raise_modal)
-        self.pdf_5.activated.connect(self.raise_modal)
-        self.pdf_6.activated.connect(self.raise_modal)
-        self.pdf_7.activated.connect(self.raise_modal)
-        self.pdf_8.activated.connect(self.raise_modal)
-        self.pdf_9.activated.connect(self.raise_modal)
+        for box in self.__boxes:
+            box.activated.connect(self.__raise_modal)
 
-    def start_simulation(self):
+    def __start_simulation(self):
         self.data["parameters"] = {
             "sampling": self.sample_time.value(),
             "threshold": self.threshold.value(),
@@ -97,30 +101,34 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         # Ventana de ejecución para el proceso de simulación
         sim_window = SimWindow(self)
         sim_window.show()
-        # self.run_button.setEnabled(self.run_condition())
+        # self.run_button.setEnabled(self.__verify_boxes())
 
-    def raise_modal(self):
-        modal = ConfigDialog(self)
-        config = modal.options.get(self.sender().currentIndex())
-        if config:
-            config()
-            modal.exec()
-            if modal.result() == 1:
-                for k, v in self.data.items():
-                    if self.sender() == v.get("box"):
-                        v["distribution"] = {
-                            "name": self.sender().currentText(),
-                            "parameters": modal.parameters.copy(),
-                            "generator": self.generators.get(
-                                self.sender().currentText()
-                            )
-                        }
-                del modal.parameters[:]
-                self.run_button.setEnabled(self.run_condition())
-            else:
-                self.sender().setCurrentIndex(0)
+    def __raise_modal(self):
+        for box in self.__boxes:
+            if self.sender() == box:
+                box_selected = box
+
+        modal = ConfigDialog(self, distribution=box_selected.currentText())
+        modal.exec()
+        if modal.result() == 1:
+            print("Entra al modal")
+            channel_id = self.__boxes.index(box_selected) + 1
+            for key, value in self.data.items():
+                print("Recorre data")
+                if channel_id == value["id"]:
+                    value["distribution"] = {
+                        "name": box_selected.currentText(),
+                        "parameters": modal.parameters_values.copy(),
+                        # "generator": self.generators.get(
+                        #     self.sender().currentText()
+                        # )
+                    }
+                    manager.CONFIG[key] = value.copy()
+                    print(manager.CONFIG)
+            del modal.parameters_values[:]
+            self.__verify_boxes()
         else:
-            return
+            self.sender().setCurrentIndex(0)
 
     # Sobre-escritura del método closeEvent para el cierre de la app
     def closeEvent(self, event):
@@ -133,20 +141,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         # )
         # if close == QtWidgets.QMessageBox.Yes:
         #     event.accept()
-
         # else:
         #     event.ignore()
         event.accept()
 
-    def reset_fields(self):
+    def __reset_fields(self):
         self.sample_time.setValue(5)
         self.threshold.setValue(0.33)
         self.run_button.setEnabled(False)
-        boxes = [self.pdf_1, self.pdf_2, self.pdf_3, self.pdf_4, self.pdf_5, self.pdf_6, self.pdf_7, self.pdf_8, self.pdf_9]
-        for box in boxes:
+        for box in self.__boxes:
             box.setCurrentIndex(0)
 
-    def save_config_as_json(self):
+    def __save_config_file_as_json(self):
         filepath, _ = QtWidgets.QFileDialog.getSaveFileName(
             self,
             'Guardar configuración',
@@ -154,10 +160,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             'JSON Files (*.json)'
         )
         if filepath:
-            pass
-        pass
+            if not manager.CONFIG:
+                manager.CONFIG = self.data.copy()
+            manager.save_as_json(filepath)
 
-    def load_config(self):
+    def __load_config_file(self):
         filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
             self,
             'Cargar configuración',
@@ -165,22 +172,29 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             'JSON Files (*.json)'
         )
         if filepath:
-            pass
+            manager.load_json(filepath)
+            self.__load_config(manager.CONFIG)
         else:
             print("Archivo de configuración no válido")
 
-    def new_sim(self):
-        self.reset_fields()
+    def __new_sim(self):
+        self.__reset_fields()
 
-    def about(self):
+    def __about(self):
         self.run_button.setEnabled(True)
 
-    def run_condition(self):
-        boxes = [self.pdf_1, self.pdf_2, self.pdf_3, self.pdf_4, self.pdf_5, self.pdf_6, self.pdf_7, self.pdf_8, self.pdf_9]
-        for box in boxes:
-            if box.currentIndex() == 0:
-                return False
-        return True
+    def __verify_boxes(self):
+        for box in self.__boxes:
+            self.run_button.setEnabled(False) if box.currentIndex() == 0 else True
+
+    def __load_config(self, data):
+        self.data = data.copy()
+        for key, value in self.data.items():
+            index = value.get("id")
+            distribution = value.get("distribution")
+            if distribution:
+                box = self.__boxes[index - 1]
+                box.setCurrentText(distribution.get("name", "Selecciona"))
 
 
 # Arranque de la aplicación
