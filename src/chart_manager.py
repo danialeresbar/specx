@@ -47,15 +47,10 @@ class ChartDesign(QChart):
     def plot_bar_chart(self):
         # Etiquetas para eje x
         x = list()
-
         for k, v in self.parameters.items():
             x.append(v.get("frequency"))
 
-        print(len(x))
-
-        # Valores de prueba eje Y
-        bars = [30]*9
-
+        bars = [value for value in range(10, 100, 10)]
         self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_label_format="%.2f %", y_max=100, y_tickcount=4, legends=x, legend_alignment=Qt.AlignRight)
 
     def plot_bernoulli(self):

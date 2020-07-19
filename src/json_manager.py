@@ -1,7 +1,10 @@
 import json
 
 
-CONFIG = dict()
+CONFIG = {
+    "channels": dict(),
+    "parameters": dict()
+}
 
 
 def save_as_json(filepath):
@@ -16,4 +19,7 @@ def save_as_json(filepath):
 
 def load_json(filepath):
     global CONFIG
-    CONFIG = json.load(open(filepath, 'r'))
+    with open(filepath, 'r') as inputfile:
+        CONFIG = json.load(inputfile)
+        return True
+    return False

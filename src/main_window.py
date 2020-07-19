@@ -1,5 +1,4 @@
 from config_dialog import ConfigDialog
-import generators as gen
 import json_manager as manager
 from qt_gui.main_window_qt import Ui_main_window, QtWidgets
 from sim_window import SimWindow
@@ -22,7 +21,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             self.pdf_9
         ]
 
-        self.data = {
+        self.channels = {
             "channel_1": {
                 "id": 1,
                 "frequency": self.channel_1_label.text(),
@@ -61,18 +60,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             },
         }
 
-        self.generators = {
-            "Bernoulli": gen.bernoulli,
-            "Beta": gen.beta,
-            "Gamma": gen.gamma,
-            "Gumbel max": gen.gumbel,
-            "Laplace": gen.laplace,
-            "Lognormal": gen.lognormal,
-            "Normal": gen.normal,
-            "Rayleih": gen.rayleigh,
-            "Uniforme": gen.uniform,
-            "Weibull": gen.weibull,
-        }
+        manager.CONFIG["channels"] = self.channels.copy()
+
+        # self.generators = {
+        #     "Bernoulli": gen.bernoulli,
+        #     "Beta": gen.beta,
+        #     "Gamma": gen.gamma,
+        #     "Gumbel max": gen.gumbel,
+        #     "Laplace": gen.laplace,
+        #     "Lognormal": gen.lognormal,
+        #     "Normal": gen.normal,
+        #     "Rayleih": gen.rayleigh,
+        #     "Uniforme": gen.uniform,
+        #     "Weibull": gen.weibull,
+        # }
 
         # Conexión de las señales de los menús
         self.new_action_menu.triggered.connect(self.__new_sim)
@@ -91,17 +92,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             box.activated.connect(self.__raise_modal)
 
     def __start_simulation(self):
-        self.data["parameters"] = {
-            "sampling": self.sample_time.value(),
-            "threshold": self.threshold.value(),
-            "energy": self.energy_flag.isChecked(),
-            "usage": self.usage_flag.isChecked(),
-        }
-
-        # Ventana de ejecución para el proceso de simulación
-        sim_window = SimWindow(self)
+        self.__pick_settings_values()
+        sim_window = SimWindow(
+            self,
+            channels=self.channels.copy(),
+            parameters=self.parameters.copy()
+        )
         sim_window.show()
-        # self.run_button.setEnabled(self.__verify_boxes())
 
     def __raise_modal(self):
         for box in self.__boxes:
@@ -111,26 +108,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         modal = ConfigDialog(self, distribution=box_selected.currentText())
         modal.exec()
         if modal.result() == 1:
-            print("Entra al modal")
             channel_id = self.__boxes.index(box_selected) + 1
-            for key, value in self.data.items():
-                print("Recorre data")
+            for key, value in self.channels.items():
                 if channel_id == value["id"]:
                     value["distribution"] = {
                         "name": box_selected.currentText(),
                         "parameters": modal.parameters_values.copy(),
-                        # "generator": self.generators.get(
-                        #     self.sender().currentText()
-                        # )
                     }
-                    manager.CONFIG[key] = value.copy()
-                    print(manager.CONFIG)
+                    manager.CONFIG["channels"][key] = value.copy()
             del modal.parameters_values[:]
-            self.__verify_boxes()
         else:
             self.sender().setCurrentIndex(0)
+        self.__verify_boxes()
 
-    # Sobre-escritura del método closeEvent para el cierre de la app
     def closeEvent(self, event):
         # close = QtWidgets.QMessageBox.information(
         #     self,
@@ -148,9 +138,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
     def __reset_fields(self):
         self.sample_time.setValue(5)
         self.threshold.setValue(0.33)
-        self.run_button.setEnabled(False)
         for box in self.__boxes:
             box.setCurrentIndex(0)
+        self.__verify_boxes()
 
     def __save_config_file_as_json(self):
         filepath, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -160,9 +150,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             'JSON Files (*.json)'
         )
         if filepath:
-            if not manager.CONFIG:
-                manager.CONFIG = self.data.copy()
+            self.__pick_settings_values()
+            manager.CONFIG["parameters"] = self.parameters.copy()
             manager.save_as_json(filepath)
+            QtWidgets.QMessageBox.information(
+                    self,
+                    "Información",
+                    "Archivo de configuración guardado en {}".format(filepath),
+                    QtWidgets.QMessageBox.Ok,
+                    QtWidgets.QMessageBox.Ok
+                )
 
     def __load_config_file(self):
         filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -172,10 +169,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             'JSON Files (*.json)'
         )
         if filepath:
-            manager.load_json(filepath)
-            self.__load_config(manager.CONFIG)
-        else:
-            print("Archivo de configuración no válido")
+            success = manager.load_json(filepath)
+            if success:
+                self.__load_config(
+                    manager.CONFIG.get("channels"),
+                    manager.CONFIG.get("parameters"),
+                )
+                QtWidgets.QMessageBox.information(
+                    self,
+                    "Información",
+                    "Archivo de configuración cargado",
+                    QtWidgets.QMessageBox.Ok,
+                    QtWidgets.QMessageBox.Ok
+                )
 
     def __new_sim(self):
         self.__reset_fields()
@@ -183,18 +189,37 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
     def __about(self):
         self.run_button.setEnabled(True)
 
+    def __pick_settings_values(self):
+        self.parameters = {
+            "sampling": self.sample_time.value(),
+            "threshold": self.threshold.value(),
+            "energy": self.energy_flag.isChecked(),
+            "usage": self.usage_flag.isChecked(),
+        }
+
     def __verify_boxes(self):
         for box in self.__boxes:
-            self.run_button.setEnabled(False) if box.currentIndex() == 0 else True
+            if box.currentIndex() == 0:
+                return self.run_button.setEnabled(False)
+        self.run_button.setEnabled(True)
 
-    def __load_config(self, data):
-        self.data = data.copy()
-        for key, value in self.data.items():
+    def __load_config(self, channels, parameters):
+        self.channels = channels.copy()
+        for key, value in self.channels.items():
             index = value.get("id")
             distribution = value.get("distribution")
+            box = self.__boxes[index - 1]
             if distribution:
-                box = self.__boxes[index - 1]
                 box.setCurrentText(distribution.get("name", "Selecciona"))
+            else:
+                box.setCurrentText("Selecciona")
+        self.__verify_boxes()
+
+        self.parameters = parameters.copy()
+        self.threshold.setValue(self.parameters.get("threshold"))
+        self.sample_time.setValue(self.parameters.get("sampling"))
+        self.energy_flag.setChecked(self.parameters.get("energy"))
+        self.usage_flag.setChecked(self.parameters.get("usage"))
 
 
 # Arranque de la aplicación

@@ -7,7 +7,7 @@ class GeneratorThread(threading.Thread):
     def __init__(self, target=None, name=None, args=(), kwargs=None):
         threading.Thread.__init__(self, target=target, name=name)
         self.data = kwargs.copy()
-        self.settings = self.data.get("parameters")
+        # self.settings = self.data.get("parameters")
         self.wait = target
         self.name = name
         self.pause_cond = threading.Condition(threading.Lock())
@@ -24,7 +24,7 @@ class GeneratorThread(threading.Thread):
         #     print("{} --> {}".format(k, v))
 
         for channel in channels:
-            print(channel)
+            # print(channel)
             with self.stop_cond:
                 if self.stopped:
                     break
