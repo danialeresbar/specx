@@ -37,7 +37,6 @@ class ChartDesign(QChart):
         self.setAnimationOptions(QChart.SeriesAnimations)
         self.setTheme(self.ChartThemeLight)
         self.setDropShadowEnabled(True)
-        # self.setBackgroundBrush(QColor("#353941"))
 
     # def wheelEvent(self, event):
     #     if event.delta() > 0:

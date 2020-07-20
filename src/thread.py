@@ -18,8 +18,8 @@ class GeneratorThread(threading.Thread):
 
     def run(self):
         '''Generación de VA y actualización de gráficas'''
-        limit = self.parameters.get("sampling")*30
-        threshold = self.parameters.get("threshold")
+        # limit = self.parameters.get("sampling")*30
+        # threshold = self.parameters.get("threshold")
 
         for channel in self.channels:
             with self.stop_cond:

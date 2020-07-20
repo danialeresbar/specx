@@ -37,18 +37,18 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
 
     def closeEvent(self, event):
         '''Sobre-escritura del método closeEvent para el cierre de la app'''
-        # close = QtWidgets.QMessageBox.information(
-        #     self,
-        #     'Salir',
-        #     "Seguro que desea cerrar la ventana de simulación?",
-        #     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-        #     QtWidgets.QMessageBox.No
-        # )
-        # if close == QtWidgets.QMessageBox.Yes:
-        #     event.accept()
+        close = QtWidgets.QMessageBox.information(
+            self,
+            'Salir',
+            "Seguro que desea cerrar la ventana de simulación?",
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+            QtWidgets.QMessageBox.No
+        )
+        if close == QtWidgets.QMessageBox.Yes:
+            event.accept()
 
-        # else:
-        #     event.ignore()
+        else:
+            event.ignore()
         event.accept()
 
     def _build_simulation(self):

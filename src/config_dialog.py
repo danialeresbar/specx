@@ -19,7 +19,6 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             "Uniforme": self.uniform,
             "Weibull": self.weibull,
         }
-
         self.distribution_callback = None
         self.__load_default_values()
         self.parameters_values = list()
