@@ -1,15 +1,16 @@
 import threading
-# from datetime import datetime, timedelta
-# import time
+from datetime import datetime, timedelta
+import time
 
 
 class GeneratorThread(threading.Thread):
     def __init__(self, target=None, name=None, args=(), kwargs=None):
         threading.Thread.__init__(self, target=target, name=name)
-        self.data = kwargs.copy()
-        # self.settings = self.data.get("parameters")
+        self.channels = [channel for channel in kwargs.get("channels").values()]
+        self.parameters = kwargs.get("parameters")
         self.wait = target
         self.name = name
+        self.finish_callback = kwargs.get("callback")
         self.pause_cond = threading.Condition(threading.Lock())
         self.paused = False  # Indicador de hilo pausado
         self.stop_cond = threading.Condition(threading.Lock())
@@ -17,24 +18,19 @@ class GeneratorThread(threading.Thread):
 
     def run(self):
         '''Generación de VA y actualización de gráficas'''
-        # limit = self.settings.get("sampling")*30
-        # threshold = self.settings.get("threshold")
-        channels = [channel for channel in self.data.values()]
-        # for k, v in self.data.items():
-        #     print("{} --> {}".format(k, v))
+        limit = self.parameters.get("sampling")*30
+        threshold = self.parameters.get("threshold")
 
-        for channel in channels:
-            # print(channel)
+        for channel in self.channels:
             with self.stop_cond:
                 if self.stopped:
                     break
-
                 # Generar VA
-
                 with self.pause_cond:
                     while self.paused:
                         self.pause_cond.wait()
 
+        self.finish_callback()
         print("Termina mi ejecución")
 
     def pause(self):

@@ -100,12 +100,14 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_1.setMaximum(1.0)
 
         self.chart = ChartDesign(
-            title="Función de densidad de probabilidad",
+            title='''
+                Función de densidad de probabilidad
+                <center><small>Distribución de Bernoulli</small></center>
+            ''',
             parameters={
                 "success": self.param_1.value(),
                 "fail": 1 - self.param_1.value(),
-            },
-            font_size=10
+            }
         )
         self.chart.plot_bernoulli()
         self.chart_view.setChart(self.chart)
@@ -126,14 +128,16 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_4.setMinimum(0.01)
 
         self.chart = ChartDesign(
-            title="Función de densidad de probabilidad",
+            title='''
+                Función de densidad de probabilidad
+                <center><small>Distribución Beta</small></center>
+            ''',
             parameters={
                 "alpha": self.param_1.value(),
                 "beta": self.param_2.value(),
                 "a": self.param_3.value(),
                 "b": self.param_4.value(),
-            },
-            font_size=10
+            }
         )
         self.chart.plot_beta()
         self.chart_view.setChart(self.chart)
@@ -152,13 +156,15 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_3.setMinimum(0)
 
         self.chart = ChartDesign(
-            title="Función de densidad de probabilidad",
+            title='''
+                Función de densidad de probabilidad
+                <center><small>Distribución de Gamma</small></center>
+            ''',
             parameters={
                 "alpha": self.param_1.value(),
                 "lmbda": self.param_2.value(),
                 "gamma": self.param_3.value(),
-            },
-            font_size=10
+            }
         )
         self.chart.plot_gamma()
         self.chart_view.setChart(self.chart)
@@ -175,12 +181,14 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_2.setMinimum(0.01)
 
         self.chart = ChartDesign(
-            title="Función de densidad de probabilidad",
+            title='''
+                Función de densidad de probabilidad
+                <center><small>Distribución de Gumbel</small></center>
+            ''',
             parameters={
                 "mu": self.param_1.value(),
                 "sigma": self.param_2.value(),
-            },
-            font_size=10
+            }
         )
         self.chart.plot_gumbel()
         self.chart_view.setChart(self.chart)
@@ -197,12 +205,14 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_2.setMinimum(0.01)
 
         self.chart = ChartDesign(
-            title="Función de densidad de probabilidad",
+            title='''
+                Función de densidad de probabilidad
+                <center><small>Distribución de Laplace</small></center>
+            ''',
             parameters={
                 "mu": self.param_1.value(),
                 "b": self.param_2.value(),
-            },
-            font_size=10
+            }
         )
         self.chart.plot_laplace()
         self.chart_view.setChart(self.chart)
@@ -221,13 +231,15 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_3.setMinimum(0.01)
 
         self.chart = ChartDesign(
-            title="Función de densidad de probabilidad",
+            title='''
+                Función de densidad de probabilidad
+                <center><small>Distribución Lognormal</small></center>
+            ''',
             parameters={
                 "mu": self.param_1.value(),
                 "sigma": self.param_2.value(),
                 "gamma": self.param_3.value(),
-            },
-            font_size=10
+            }
         )
         self.chart.plot_lognorm()
         self.chart_view.setChart(self.chart)
@@ -244,12 +256,14 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_2.setMinimum(0.01)
 
         self.chart = ChartDesign(
-            title="Función de densidad de probabilidad",
+            title='''
+                Función de densidad de probabilidad
+                <center><small>Distribución Normal</small></center>
+            ''',
             parameters={
                 "mu": self.param_1.value(),
                 "sigma": self.param_2.value(),
-            },
-            font_size=10
+            }
         )
         self.chart.plot_norm()
         self.chart_view.setChart(self.chart)
@@ -266,12 +280,14 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_2.setMinimum(0)
 
         self.chart = ChartDesign(
-            title="Función de densidad de probabilidad",
+            title='''
+                Función de densidad de probabilidad
+                <center><small>Distribución de Rayleigh</small></center>
+            ''',
             parameters={
                 "sigma": self.param_1.value(),
                 "lmbda": self.param_2.value(),
-            },
-            font_size=10
+            }
         )
         self.chart.plot_rayleigh()
         self.chart_view.setChart(self.chart)
@@ -286,12 +302,14 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_2_label.setText("Parámetro de\ncota superior:")
 
         self.chart = ChartDesign(
-            title="Función de densidad de probabilidad",
+            title='''
+                Función de densidad de probabilidad
+                <center><small>Distribución Uniforme</small></center>
+            ''',
             parameters={
                 "inf": self.param_1.value(),
                 "sup": self.param_2.value(),
-            },
-            font_size=10
+            }
         )
         self.chart.plot_uniform()
         self.chart_view.setChart(self.chart)
@@ -310,13 +328,15 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_3.setMinimum(0.01)
 
         self.chart = ChartDesign(
-            title="Función de densidad de probabilidad",
+            title='''
+                Función de densidad de probabilidad
+                <center><small>Distribución de Weibull</small></center>
+            ''',
             parameters={
                 "gamma": self.param_1.value(),
                 "alpha": self.param_2.value(),
                 "mu": self.param_3.value(),
-            },
-            font_size=10
+            }
         )
         self.chart.plot_weibull()
         self.chart_view.setChart(self.chart)

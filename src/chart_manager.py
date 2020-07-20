@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets
+import numpy as np
 from PyQt5.QtChart import (
     QChart,
     QBarCategoryAxis,
@@ -8,41 +8,43 @@ from PyQt5.QtChart import (
     QLegend,
     QSplineSeries,
 )
+from PyQt5.QtCore import (
+    Qt,
+    QMargins
+)
 from PyQt5.QtGui import (
     QFont,
-    QPixmap,
     QColor,
     QColorConstants
 )
-from PyQt5.QtCore import Qt, QMargins
-import numpy as np
 import scipy.stats as stats
+
+
+FONT_LABEL = QFont()
+FONT_TITLE = QFont()
 
 
 class ChartDesign(QChart):
     def __init__(self, **kwargs):
         super().__init__()
-
-        self.title = kwargs.get("title", "Nuevo gráfico")
+        self.title = kwargs.get("title", "Título del gráfico")
         self.parameters = kwargs.get("parameters", None)
-        self.font = QFont()
-        self.font.setPointSize(kwargs.get("font_size", 10))
 
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.setBackgroundRoundness(0)
         self.setTitle(self.title)
         self.setMargins(QMargins(15, 15, 15, 15))
         self.setAnimationOptions(QChart.SeriesAnimations)
-        self.setTheme(self.ChartThemeDark)
+        self.setTheme(self.ChartThemeLight)
         self.setDropShadowEnabled(True)
-        self.setBackgroundBrush(QColor("#353941"))
+        # self.setBackgroundBrush(QColor("#353941"))
 
-    def wheelEvent(self, event):
-        if event.delta() > 0:
-            self.zoomIn()
-        else:
-            self.zoomOut()
-        event.accept()
+    # def wheelEvent(self, event):
+    #     if event.delta() > 0:
+    #         self.zoomIn()
+    #     else:
+    #         self.zoomOut()
+    #     event.accept()
 
     def plot_bar_chart(self):
         # Etiquetas para eje x
@@ -51,7 +53,7 @@ class ChartDesign(QChart):
             x.append(v.get("frequency"))
 
         bars = [value for value in range(10, 100, 10)]
-        self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_label_format="%.2f %", y_max=100, y_tickcount=4, legends=x, legend_alignment=Qt.AlignRight)
+        self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_label_format="%.2f %", y_max=100, y_tickcount=4, legends=x, legend_alignment=Qt.AlignBottom)
 
     def plot_bernoulli(self):
         # Etiquetas para eje x
@@ -63,7 +65,7 @@ class ChartDesign(QChart):
             QColorConstants.Svg.indianred
         ]
 
-        self.add_bars(x=x, bars=bars, bar_colors=bar_colors, bar_label_format="@value", y_label_format="", y_max=1, y_tickcount=5, legends=legends, legend_alignment=Qt.AlignTop)
+        self.add_bars(x=x, bars=bars, bar_colors=bar_colors, bar_label_format="@value", y_label_format="", y_max=1, y_tickcount=5, legends=legends, legend_alignment=Qt.AlignBottom)
 
     def plot_beta(self):
         alpha = self.parameters.get("alpha")
@@ -212,6 +214,9 @@ class ChartDesign(QChart):
         pass
 
     def add_spline_series(self, serie, x, y):
+        global FONT_LABEL, FONT_TITLE
+        FONT_TITLE.setPointSizeF(12)
+        FONT_LABEL.setPointSizeF(8)
         for index in range(len(y)):
             serie.append(x[index], y[index])
 
@@ -222,12 +227,16 @@ class ChartDesign(QChart):
         self.addSeries(serie)
         self.createDefaultAxes()
         self.axes(Qt.Vertical, serie)[0].setRange(0, max(y)+0.05)
-        self.legend().setFont(self.font)
         self.legend().setVisible(True)
         self.legend().setMarkerShape(QLegend.MarkerShapeFromSeries)
-        self.setTitleFont(self.font)
+        self.legend().setAlignment(Qt.AlignTop)
+        self.setTitleFont(FONT_TITLE)
 
     def add_bars(self, x, bars, bar_colors, bar_label_format, y_label_format, y_max, y_tickcount, legends, legend_alignment):
+        global FONT_LABEL, FONT_TITLE
+        FONT_TITLE.setPointSizeF(12)
+        FONT_TITLE.setWeight(QFont.Bold)
+        FONT_LABEL.setPointSizeF(8)
         for index in range(len(bars)):
             series = QBarSeries()
 
@@ -236,7 +245,7 @@ class ChartDesign(QChart):
                 bar_set.setColor(bar_colors[index])
 
             bar_set.setLabelColor(Qt.black)
-            bar_set.setLabelFont(self.font)
+            bar_set.setLabelFont(FONT_LABEL)
             bar_set.append(bars[index])
 
             series.append(bar_set)
@@ -255,40 +264,11 @@ class ChartDesign(QChart):
         axis_x = QBarCategoryAxis()
         axis_x.append(x)
         self.addAxis(axis_x, Qt.AlignBottom)
-        axis_x.setLabelsFont(self.font)
+        axis_x.setLabelsFont(FONT_LABEL)
         axis_y = self.axes(Qt.Vertical, series)[0]
         axis_y.setRange(0, y_max)
         axis_y.setTickCount(y_tickcount)
         axis_y.setLabelFormat(y_label_format)
-        axis_y.setLabelsFont(self.font)
-
-        self.legend().setFont(self.font)
+        axis_y.setLabelsFont(FONT_LABEL)
         self.legend().setAlignment(legend_alignment)
-        self.setTitleFont(self.font)
-
-    def save_chart(self, chart_view):
-        name, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self, "Guardar como",
-            "chart",
-            "JPG (*.jpg);;PNG (*.png)",
-            options=QtWidgets.QFileDialog.Options()
-            )
-
-        if name:
-            file = QPixmap(chart_view.grab())
-            file.save(name, quality=100)
-
-            if file:
-                QtWidgets.QMessageBox.information(
-                    self,
-                    "Guardar gráfico",
-                    "Gráfico guardado con éxito.",
-                    QtWidgets.QMessageBox.Ok
-                )
-            else:
-                QtWidgets.QMessageBox.critical(
-                    self,
-                    "Guardar gráfico",
-                    "Error al guardar el gráfico.",
-                    QtWidgets.QMessageBox.Ok
-                )
+        self.setTitleFont(FONT_TITLE)

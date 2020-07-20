@@ -1,0 +1,46 @@
+{
+    "channels": {
+        "channel_1": {
+            "id": 1,
+            "frequency": "473 MHz"
+        },
+        "channel_2": {
+            "id": 2,
+            "frequency": "479 MHz"
+        },
+        "channel_3": {
+            "id": 3,
+            "frequency": "485 MHz"
+        },
+        "channel_4": {
+            "id": 4,
+            "frequency": "491 MHz"
+        },
+        "channel_5": {
+            "id": 5,
+            "frequency": "497 MHz"
+        },
+        "channel_6": {
+            "id": 6,
+            "frequency": "503 MHz"
+        },
+        "channel_7": {
+            "id": 7,
+            "frequency": "509 MHz"
+        },
+        "channel_8": {
+            "id": 8,
+            "frequency": "551 MHz"
+        },
+        "channel_9": {
+            "id": 9,
+            "frequency": "557 MHz"
+        }
+    },
+    "parameters": {
+        "sampling": 5,
+        "threshold": 0.33,
+        "energy": false,
+        "usage": false
+    }
+}
