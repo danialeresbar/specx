@@ -37,18 +37,17 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
 
     def closeEvent(self, event):
         '''Sobre-escritura del método closeEvent para el cierre de la app'''
-        close = QtWidgets.QMessageBox.information(
-            self,
-            'Salir',
-            "Seguro que desea cerrar la ventana de simulación?",
-            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-            QtWidgets.QMessageBox.No
-        )
-        if close == QtWidgets.QMessageBox.Yes:
-            event.accept()
-
-        else:
-            event.ignore()
+        # close = QtWidgets.QMessageBox.information(
+        #     self,
+        #     'Salir',
+        #     "Seguro que desea cerrar la ventana de simulación?",
+        #     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+        #     QtWidgets.QMessageBox.No
+        # )
+        # if close == QtWidgets.QMessageBox.Yes:
+        #     event.accept()
+        # else:
+        #     event.ignore()
         event.accept()
 
     def _build_simulation(self):
@@ -125,14 +124,13 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
                 self.__thread.stop()
             else:
                 self.__thread.stop()
-            self.__speed_button_mannager(True, False, False, False)
-            self.__sim_button_mannager(False, False, False, False)
+            self.__speed_button_mannager(False, False, False, False)
+            self.__sim_button_mannager(True, False, False, False)
 
     def get_speed_value(self):
         return self.speed
 
     def increase_speed(self):
-        global MAX_SPEED
         self.speed *= 2
         self.__speed_button_mannager(True, True, True, True)
         if self.speed < 1:
@@ -140,10 +138,9 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         else:
             self.time_speed_label.setText("X{}".format(int(self.speed)))
         if self.speed == MAX_SPEED:
-            self.__speed_button_mannager(False, True, True, True)
+            self.__speed_button_mannager(False, True, False, True)
 
     def decrease_speed(self):
-        global MIN_SPEED
         self.speed /= 2
         self.__speed_button_mannager(True, True, True, True)
         if self.speed < 1:
@@ -162,7 +159,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         global MAX_SPEED
         self.speed = MAX_SPEED
         self.time_speed_label.setText("X{}".format(int(self.speed)))
-        self.__speed_button_mannager(False, True, True, True)
+        self.__speed_button_mannager(False, True, False, True)
 
     def __sim_button_mannager(self, f1, f2, f3, f4):
         self.start_button.setEnabled(f1)
@@ -182,3 +179,5 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.__speed_button_mannager(False, False, False, False)
         self.speed = 1
         self.time_speed_label.setText("X{}".format(int(self.speed)))
+        self.show_file_button.setEnabled(True)
+        self.save_chart_button.setEnabled(True)

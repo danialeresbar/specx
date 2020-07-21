@@ -26,6 +26,7 @@ class GeneratorThread(threading.Thread):
                 if self.stopped:
                     break
                 # Generar VA
+                time.sleep(self.wait())
                 with self.pause_cond:
                     while self.paused:
                         self.pause_cond.wait()

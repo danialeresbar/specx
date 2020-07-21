@@ -122,17 +122,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         self.__verify_boxes()
 
     def closeEvent(self, event):
-        close = QtWidgets.QMessageBox.information(
-            self,
-            "Salir",
-            "Estás seguro que deseas salir?",
-            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-            QtWidgets.QMessageBox.No
-        )
-        if close == QtWidgets.QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()
+        # close = QtWidgets.QMessageBox.information(
+        #     self,
+        #     "Salir",
+        #     "Estás seguro que deseas salir?",
+        #     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+        #     QtWidgets.QMessageBox.No
+        # )
+        # if close == QtWidgets.QMessageBox.Yes:
+        #     event.accept()
+        # else:
+        #     event.ignore()
         event.accept()
 
     def __reset_fields(self):
