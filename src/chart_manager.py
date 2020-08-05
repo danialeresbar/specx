@@ -33,17 +33,10 @@ class ChartDesign(QChart):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.setBackgroundRoundness(0)
         self.setTitle(self.title)
-        self.setMargins(QMargins(15, 15, 15, 15))
+        self.setMargins(QMargins(10, 10, 10, 10))
         self.setAnimationOptions(QChart.SeriesAnimations)
         self.setTheme(self.ChartThemeLight)
         self.setDropShadowEnabled(True)
-
-    # def wheelEvent(self, event):
-    #     if event.delta() > 0:
-    #         self.zoomIn()
-    #     else:
-    #         self.zoomOut()
-    #     event.accept()
 
     def plot_bar_chart(self):
         # Etiquetas para eje x
@@ -52,7 +45,7 @@ class ChartDesign(QChart):
             x.append(v.get("frequency"))
 
         bars = [value for value in range(10, 100, 10)]
-        self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_label_format="%.2f %", y_max=100, y_tickcount=4, legends=x, legend_alignment=Qt.AlignBottom)
+        self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_label_format="%.2f %", y_max=100, y_tickcount=5, legends=x, legend_alignment=Qt.AlignBottom)
 
     def plot_bernoulli(self):
         # Etiquetas para eje x
@@ -210,7 +203,23 @@ class ChartDesign(QChart):
         self.add_spline_series(serie, x, y)
 
     def dynamic_spline(self):
-        pass
+        global FONT_LABEL, FONT_TITLE
+        FONT_TITLE.setPointSizeF(10)
+        FONT_LABEL.setPointSizeF(8)
+        serie = QSplineSeries()
+        serie.append(0, 0)
+        pen = serie.pen()
+        pen.setColor(QColor("#5f85db"))
+        pen.setWidth(2)
+        serie.setPen(pen)
+        self.addSeries(serie)
+        self.createDefaultAxes()
+        self.axes(Qt.Vertical, serie)[0].setRange(0, 0.9)
+        self.axes(Qt.Horizontal, serie)[0].setRange(0, 10)
+        self.axes(Qt.Horizontal, serie)[0].setTickCount(6)
+        self.legend().setVisible(False)
+        self.setTitleFont(FONT_TITLE)
+        return serie
 
     def add_spline_series(self, serie, x, y):
         global FONT_LABEL, FONT_TITLE
@@ -270,4 +279,5 @@ class ChartDesign(QChart):
         axis_y.setLabelFormat(y_label_format)
         axis_y.setLabelsFont(FONT_LABEL)
         self.legend().setAlignment(legend_alignment)
+        self.legend().setVisible(False)
         self.setTitleFont(FONT_TITLE)

@@ -1,12 +1,13 @@
 import threading
-from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
 import time
 
 
-class GeneratorThread(threading.Thread):
+class SimulationThread(threading.Thread):
     def __init__(self, target=None, name=None, args=(), kwargs=None):
         threading.Thread.__init__(self, target=target, name=name)
         self.channels = [channel for channel in kwargs.get("channels").values()]
+        self.series = [serie for serie in kwargs.get("series")]
         self.parameters = kwargs.get("parameters")
         self.wait = target
         self.name = name
@@ -20,6 +21,7 @@ class GeneratorThread(threading.Thread):
         '''Generación de VA y actualización de gráficas'''
         # limit = self.parameters.get("sampling")*30
         # threshold = self.parameters.get("threshold")
+        self.series[0].append(6, 0.69)
 
         for channel in self.channels:
             with self.stop_cond:
@@ -27,6 +29,7 @@ class GeneratorThread(threading.Thread):
                     break
                 # Generar VA
                 time.sleep(self.wait())
+                # print("Waiting")
                 with self.pause_cond:
                     while self.paused:
                         self.pause_cond.wait()
@@ -52,3 +55,12 @@ class GeneratorThread(threading.Thread):
         la condición detenido en cerrado (locked)'''
         self.stopped = True
         self.stop_cond.acquire  # Establece el indicador interno a True
+
+
+class FileThread(threading.Thread):
+    def __init__(self, target=None, name=None, args=(), kwargs=None):
+        threading.Thread.__init__(self, target=target, name=name)
+
+    def run(self):
+        '''Abre una instancia de un archivo'''
+        pass
