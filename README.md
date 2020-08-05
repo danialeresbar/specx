@@ -34,16 +34,16 @@ _Estas instrucciones le permitirán obtener una copia del proyecto en funcionami
 
 ### Pre-requisitos 📋
 
-_Specx está desarrollado completamente en Python, lenguaje que dispone de una gran variedad de librerías para diferentes áreas._
+_Specx está desarrollado completamente en Python._
 
 ### Python
 
-En primer lugar, asegúrese de que Python 3 esté disponible en su sistema. Puede verificar esto fácilmente abriendo la terminal e ingresando el comando python3. Si necesita instalarlo, en caso de usar Windows consulte la [página de inicio](https://www.python.org/downloads/) de Python y descargue la versión 3.8, o instálelo con homebrew (brew install python3) en OS X, o su administrador de paquetes de Linux favorito:
+En primer lugar, asegúrese de que Python 3 está instalado en su sistema. Puede verificar esto fácilmente abriendo la terminal e ingresando el comando python3. Si necesita instalarlo, en caso de usar Windows consulte la [página de inicio](https://www.python.org/downloads/) de Python, o instálelo con homebrew (brew install python3) en OS X, o su administrador de paquetes de Linux favorito:
 
 
 ### Instalación 🔧
 
-_Leve a cabo los siguientes pasos para poder ejecutar Specx con todas sus funcionalidades:_
+_Lleve a cabo los siguientes pasos para poder ejecutar Specx con todas sus funcionalidades:_
 
 Una vez instalada la versión de Python, lo siguiente es la instalación de las librerías que no so son nativas, para lo cual puede hacer uso del archivo "requirements.txt" ejecutando el siguiente comando:
 
@@ -53,9 +53,15 @@ pip install -r requirements.txt
 
 ## Ejecutando las pruebas ⚙️
 
-_Para ejecutar Specx por primera vez mira las siguientes instrucciones:_
+_Para ejecutar Specx por primera vez sigue las siguientes instrucciones:_
 
-* Dirígete por consola al directorio src y ejecuta el siguiente comando:
+* Dirígete por consola al directorio src con:
+
+```
+cd src
+```
+
+* Una vez allí, ejecuta el siguiente comando:
 
 ```
 python main_window.py
