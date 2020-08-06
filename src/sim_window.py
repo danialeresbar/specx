@@ -17,6 +17,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
 
         self.channels = kwargs.get("channels", None)
         self.parameters = kwargs.get("parameters", None)
+        self.series = list()
         self.speed = 1
 
         self.__sim_button_mannager(True, False, False, False)
@@ -25,9 +26,9 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
 
         # Conexión de señales de los botones
         self.start_button.clicked.connect(self.__start)
-        # self.play_button.clicked.connect(self.__resume)
-        # self.pause_button.clicked.connect(self.__pause)
-        # self.stop_button.clicked.connect(self.__stop)
+        self.play_button.clicked.connect(self.__resume)
+        self.pause_button.clicked.connect(self.__pause)
+        self.stop_button.clicked.connect(self.__stop)
         self.increase_time_speed_button.clicked.connect(self.increase_speed)
         self.decrease_time_speed_button.clicked.connect(self.decrease_speed)
         self.max_time_speed_button.clicked.connect(self.__max_speed)
@@ -35,7 +36,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.save_chart_button.clicked.connect(self.save_chart)
 
     def closeEvent(self, event):
-        '''Sobre-escritura del método closeEvent para el cierre de la app'''
+        '''Sobre-escritura del método closeEvent para el cierre de la app.'''
         # close = QtWidgets.QMessageBox.information(
         #     self,
         #     'Salir',
@@ -49,8 +50,8 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         #     event.ignore()
         event.accept()
 
-    def __build_simulation(self):
-        self.series = list()
+    def __plot_init(self):
+        '''Construye e inicializa los gráficos de la simulación.'''
         self.c1 = ChartDesign(
             title="Canal 1",
             parameters={
@@ -141,12 +142,15 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.series.append(self.c9.dynamic_spline())
         self.chart_test_9.setChart(self.c9)
 
-        self.chart_channels_usage = ChartDesign(
-            title="%  Ocupación de los canales TDT",
+        self.bars_usage = ChartDesign(
+            title="%  Ocupación de los canales.",
             parameters=self.channels.copy()
         )
-        self.chart_channels_usage.plot_bar_chart()
-        self.chart_bars_view.setChart(self.chart_channels_usage)
+        self.bars_usage.plot_bar_chart()
+        self.chart_bars_view.setChart(self.bars_usage)
+
+    def __build_simulation(self):
+        self.__plot_init()
 
     def save_chart(self):
         filepath, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -194,23 +198,23 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.__sim_button_mannager(False, False, True, True)
         self.__speed_button_mannager(True, True, True, True)
 
-    # def __resume(self):
-    #     self.__thread.resume()
-    #     self.__sim_button_mannager(False, False, True, True)
+    def __resume(self):
+        self.__thread.resume()
+        self.__sim_button_mannager(False, False, True, True)
 
-    # def __pause(self):
-    #     self.__thread.pause()
-    #     self.__sim_button_mannager(False, True, False, True)
+    def __pause(self):
+        self.__thread.pause()
+        self.__sim_button_mannager(False, True, False, True)
 
-    # def __stop(self):
-    #     if self.__thread.is_alive:
-    #         if self.__thread.paused:
-    #             self.__thread.resume()
-    #             self.__thread.stop()
-    #         else:
-    #             self.__thread.stop()
-    #         self.__speed_button_mannager(False, False, False, False)
-    #         self.__sim_button_mannager(True, False, False, False)
+    def __stop(self):
+        if self.__thread.is_alive:
+            if self.__thread.paused:
+                self.__thread.resume()
+                self.__thread.stop()
+            else:
+                self.__thread.stop()
+            self.__speed_button_mannager(False, False, False, False)
+            self.__sim_button_mannager(True, False, False, False)
 
     def get_speed_value(self):
         return self.speed

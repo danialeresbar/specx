@@ -56,6 +56,14 @@ class SimulationThread(threading.Thread):
         self.stopped = True
         self.stop_cond.acquire  # Establece el indicador interno a True
 
+    def __var_checker(var):
+        '''Verifica que la variable aleatoria generada esté dentro del rango
+        establecido de valores.'''
+        if var < 0:
+            return 0
+
+        return var if var < 0.75 else 0.75
+
 
 class FileThread(threading.Thread):
     def __init__(self, target=None, name=None, args=(), kwargs=None):

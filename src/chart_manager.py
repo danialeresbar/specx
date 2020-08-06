@@ -57,7 +57,7 @@ class ChartDesign(QChart):
             QColorConstants.Svg.indianred
         ]
 
-        self.add_bars(x=x, bars=bars, bar_colors=bar_colors, bar_label_format="@value", y_label_format="", y_max=1, y_tickcount=5, legends=legends, legend_alignment=Qt.AlignBottom)
+        self.add_bars(x=x, bars=bars, bar_colors=bar_colors, bar_label_format="@value", y_label_format="", y_max=1, y_tickcount=6, legends=legends, legend_alignment=Qt.AlignBottom)
 
     def plot_beta(self):
         alpha = self.parameters.get("alpha")
