@@ -66,21 +66,24 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         index = 0
         for key, value in self.channels.items():
             if value["distribution"].get("name") == "Bernoulli":
-                print("{} -> Lineal".format(key))
                 chart = LineChart(title="Canal {}".format(value.get("id")))
                 self.series.append(
                     chart.dynamic_line()
                 )
                 self.plot_views[index].setChart(chart)
             else:
-                print("{} -> Curva".format(key))
+                chart = SplineChart(title="Canal {}".format(value.get("id")))
+                self.series.append(
+                    chart.dynamic_spline()
+                )
+                self.plot_views[index].setChart(chart)
             index += 1
 
         self.bars_usage = BarChart(
-            title="%  Ocupación de los canales.",
+            title="%  Ocupación de los canales",
             parameters=self.channels.copy()
         )
-        self.bars_usage.plot_bar_chart()
+        self.series.append(self.bars_usage.plot_bar_chart())
         self.chart_bars_view.setChart(self.bars_usage)
 
     def __prepare_simulation(self):

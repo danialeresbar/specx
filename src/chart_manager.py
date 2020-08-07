@@ -280,9 +280,10 @@ class SplineChart(QChart):
         serie.setPen(pen)
         self.addSeries(serie)
         self.createDefaultAxes()
-        self.axes(Qt.Vertical, serie)[0].setRange(-0.2, 1.2)
+        self.axes(Qt.Vertical, serie)[0].setRange(0, 1)
+        self.axes(Qt.Vertical, serie)[0].setTickCount(4)
         self.axes(Qt.Horizontal, serie)[0].setRange(0, 10)
-        self.axes(Qt.Horizontal, serie)[0].setTickCount(6)
+        self.axes(Qt.Horizontal, serie)[0].setTickCount(5)
         self.legend().setVisible(False)
         self.setTitleFont(FONT_TITLE)
         return serie
@@ -312,6 +313,7 @@ class LineChart(QChart):
         pen.setColor(QColor("#5f85db"))
         pen.setWidth(2)
         serie.setPen(pen)
+        serie.setPointsVisible(True)
         self.addSeries(serie)
         self.createDefaultAxes()
         self.axes(Qt.Vertical, serie)[0].setRange(0, 1)
@@ -342,10 +344,12 @@ class BarChart(QChart):
         for k, v in self.parameters.items():
             x.append(v.get("frequency"))
 
-        bars = [value for value in range(10, 100, 10)]
-        self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_label_format="%.2f %", y_max=100, y_tickcount=5, legends=x, legend_alignment=Qt.AlignBottom)
+        # bars = [value for value in range(10, 100, 10)]
+        bars = [0]*9
+        series = self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_max=100, y_tickcount=5, legends=x, legend_alignment=Qt.AlignBottom)
+        return series
 
-    def add_bars(self, x, bars, bar_colors, bar_label_format, y_label_format, y_max, y_tickcount, legends, legend_alignment):
+    def add_bars(self, x, bars, bar_colors, bar_label_format, y_max, y_tickcount, legends, legend_alignment):
         global FONT_LABEL, FONT_TITLE
         FONT_TITLE.setPointSizeF(12)
         FONT_TITLE.setWeight(QFont.Bold)
@@ -377,8 +381,9 @@ class BarChart(QChart):
         axis_y = self.axes(Qt.Vertical, series)[0]
         axis_y.setRange(0, y_max)
         axis_y.setTickCount(y_tickcount)
-        axis_y.setLabelFormat(y_label_format)
         axis_y.setLabelsFont(FONT_LABEL)
+        axis_y.setTitleText("Porcentaje de ocupación")
         self.legend().setAlignment(legend_alignment)
         self.legend().setVisible(False)
         self.setTitleFont(FONT_TITLE)
+        return self.series()

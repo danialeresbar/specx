@@ -2,7 +2,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtChart import QChartView
 
 
-
 class Ui_sim_window(object):
     def setupUi(self, sim_window):
         sim_window.setObjectName("sim_window")
@@ -512,7 +511,7 @@ class Ui_sim_window(object):
 
         self.main_layout.addLayout(self.channel_layout)
         self.chart_layout = QtWidgets.QHBoxLayout()
-        self.chart_layout.setContentsMargins(5, 5, 5, 5)
+        self.chart_layout.setContentsMargins(0, 0, 0, 0)
         self.chart_layout.setSpacing(5)
         self.chart_layout.setObjectName("chart_layout")
         self.chart_bars_view = QChartView()
@@ -520,8 +519,8 @@ class Ui_sim_window(object):
         self.chart_layout.addWidget(self.chart_bars_view)
         self.main_layout.addLayout(self.chart_layout)
         self.main_layout.setStretch(0, 5)
-        self.main_layout.setStretch(1, 65)
-        self.main_layout.setStretch(2, 30)
+        self.main_layout.setStretch(1, 60)
+        self.main_layout.setStretch(2, 35)
         sim_window.setCentralWidget(self.container)
         """self.statusbar = QtWidgets.QStatusBar(sim_window)
         self.statusbar.setObjectName("statusbar")

@@ -11,6 +11,7 @@ class SimulationThread(threading.Thread):
             channel for channel in kwargs.get("channels").values()
         ]
         self.series = [serie for serie in kwargs.get("series")]
+        # self.bars = kwargs.get("bars")
         self.parameters = kwargs.get("parameters")
         self.generators = kwargs.get("generators")
         self.wait = target
@@ -26,8 +27,8 @@ class SimulationThread(threading.Thread):
         '''Generación de Variables aleatorias y actualización de gráficas'''
         index = 0
         limit = self.parameters.get("sampling")*30
-        # threshold = self.parameters.get("threshold")
         point = datetime.now()
+        bars = self.series[-1]
 
         for channel in self.channels:
             counter = 0
@@ -55,7 +56,7 @@ class SimulationThread(threading.Thread):
                 if self.stopped:
                     break
 
-            self.__update_bars(random_vars)
+            self.__update_bars(bars[index], random_vars)
             index += 1
 
         self.finish_callback()
@@ -86,19 +87,18 @@ class SimulationThread(threading.Thread):
             dx = serie.chart().plotArea().width() / serie.chart().axes(Qt.Horizontal, serie)[0].tickCount()
             serie.chart().scroll(dx, 0)
 
-    def __update_bars(self, values):
-        pass
+    def __update_bars(self, bar, values):
+        counter = 0
+        for value in values:
+            if value > self.parameters.get("threshold"):
+                counter += 1
+        bar.barSets()[0].replace(0, (counter/len(values))*100)
+        if (counter/len(values))*100 < 20:
+            bar.setLabelsPosition(3)
 
     def __update_file_content(self, point, frequency, distribution, var):
         line = point.strftime("%m-%d-%Y-%H:%M:%S") + ';' + frequency + ';' + distribution + ';' + str(var)
         self.file_content.append(line)
-
-    def __var_checker(self, var):
-        '''Verifica que la variable aleatoria generada esté dentro del rango
-        establecido de valores.'''
-        if var < 0:
-            return 0
-        return var if var < 0.8 else 0.8
 
 
 class FileThread(threading.Thread):

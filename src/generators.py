@@ -31,6 +31,14 @@ def cong_mixto_gcc():
     return SEED_2/m
 
 
+def __var_checker(var):
+    '''Verifica que la variable aleatoria generada esté dentro del rango
+    establecido de valores.'''
+    if var < 0:
+        return 0
+        return var if var < 0.75 else 0.75
+
+
 def bernoulli(args):
     '''Genera una variable aleatoria que sigue una distribución
     de Bernoulli con una probabilidad de éxito p'''
@@ -42,7 +50,7 @@ def beta(args):
     '''Genera una variable aleatoria que sigue una distribución
     Beta de acuerdo a los parámetros enviados'''
     r_v = stats.beta.rvs(args[0], args[1], loc=args[2], scale=args[3])
-    return r_v
+    return __var_checker(r_v)
 
 
 def gamma(args):
@@ -83,7 +91,7 @@ def normal(args):
     '''Genera una variable aleatoria que sigue una distribución
     Normal de acuerdo a los parámetros enviados'''
     r_v = stats.norm.rvs(loc=args[0], scale=args[1])
-    return r_v
+    return __var_checker(r_v)
 
 
 def rayleigh(args):
