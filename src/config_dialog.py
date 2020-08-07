@@ -1,5 +1,5 @@
 from qt_gui.config_dialog_qt import Ui_config_dialog, QtWidgets
-from chart_manager import ChartDesign
+from chart_manager import PDFChart
 
 
 class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
@@ -22,7 +22,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         self.distribution_callback = None
         self.__load_default_values()
         self.parameters_values = list()
-        self.chart = ChartDesign()
+        self.chart = PDFChart()
 
         # Conexión de las señales de los botones
         self.submit_button.clicked.connect(self.__pick_values)
@@ -98,7 +98,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_1.setMinimum(0.0)
             self.param_1.setMaximum(1.0)
 
-        self.chart = ChartDesign(
+        self.chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Bernoulli</small></center>
@@ -126,7 +126,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_4_label.setText("Parámetro de\nescala:")
             self.param_4.setMinimum(0.01)
 
-        self.chart = ChartDesign(
+        self.chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución Beta</small></center>
@@ -154,7 +154,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_3_label.setText("Parámetro de\nubicación:")
             self.param_3.setMinimum(0)
 
-        self.chart = ChartDesign(
+        self.chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Gamma</small></center>
@@ -179,7 +179,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_2_label.setText("Parámetro de\nescala:")
             self.param_2.setMinimum(0.01)
 
-        self.chart = ChartDesign(
+        self.chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Gumbel</small></center>
@@ -203,7 +203,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_2_label.setText("Parámetro de\nescala:")
             self.param_2.setMinimum(0.01)
 
-        self.chart = ChartDesign(
+        self.chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Laplace</small></center>
@@ -229,7 +229,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_3_label.setText("Parámetro de\nescala:")
             self.param_3.setMinimum(0.01)
 
-        self.chart = ChartDesign(
+        self.chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución Lognormal</small></center>
@@ -254,7 +254,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_2_label.setText("Parámetro de\nforma:")
             self.param_2.setMinimum(0.01)
 
-        self.chart = ChartDesign(
+        self.chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución Normal</small></center>
@@ -278,7 +278,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_2_label.setText("Parámetro de\nubicación:")
             self.param_2.setMinimum(0)
 
-        self.chart = ChartDesign(
+        self.chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Rayleigh</small></center>
@@ -300,7 +300,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_1_label.setText("Parámetro de\ncota inferior:")
             self.param_2_label.setText("Parámetro de\ncota superior:")
 
-        self.chart = ChartDesign(
+        self.chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución Uniforme</small></center>
@@ -326,7 +326,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.param_3_label.setText("Parámetro de\nubicación:")
             self.param_3.setMinimum(0.01)
 
-        self.chart = ChartDesign(
+        self.chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Weibull</small></center>

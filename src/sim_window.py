@@ -1,4 +1,4 @@
-from chart_manager import ChartDesign
+from chart_manager import BarChart, LineChart, SplineChart
 from qt_gui.sim_window_qt import Ui_sim_window, QtWidgets
 from PyQt5.QtGui import QPixmap
 from thread import SimulationThread
@@ -17,12 +17,23 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
 
         self.channels = kwargs.get("channels", None)
         self.parameters = kwargs.get("parameters", None)
+        self.generators = kwargs.get("generators", None)
         self.series = list()
         self.speed = 1
 
-        self.__sim_button_mannager(True, False, False, False)
-        self.__speed_button_mannager(False, False, False, False)
-        self.__build_simulation()
+        self.plot_views = [
+            self.chart_test_1,
+            self.chart_test_2,
+            self.chart_test_3,
+            self.chart_test_4,
+            self.chart_test_5,
+            self.chart_test_6,
+            self.chart_test_7,
+            self.chart_test_8,
+            self.chart_test_9,
+        ]
+
+        self.__prepare_simulation()
 
         # Conexión de señales de los botones
         self.start_button.clicked.connect(self.__start)
@@ -52,104 +63,30 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
 
     def __plot_init(self):
         '''Construye e inicializa los gráficos de la simulación.'''
-        self.c1 = ChartDesign(
-            title="Canal 1",
-            parameters={
-                "x": [0],
-                "y": [0]
-            }
-        )
-        self.series.append(self.c1.dynamic_spline())
-        self.chart_test_1.setChart(self.c1)
+        index = 0
+        for key, value in self.channels.items():
+            if value["distribution"].get("name") == "Bernoulli":
+                print("{} -> Lineal".format(key))
+                chart = LineChart(title="Canal {}".format(value.get("id")))
+                self.series.append(
+                    chart.dynamic_line()
+                )
+                self.plot_views[index].setChart(chart)
+            else:
+                print("{} -> Curva".format(key))
+            index += 1
 
-        self.c2 = ChartDesign(
-            title="Canal 2",
-            parameters={
-                "x": [0],
-                "y": [0]
-            }
-        )
-        self.series.append(self.c2.dynamic_spline())
-        self.chart_test_2.setChart(self.c2)
-
-        self.c3 = ChartDesign(
-            title="Canal 3",
-            parameters={
-                "x": [0],
-                "y": [0]
-            }
-        )
-        self.series.append(self.c3.dynamic_spline())
-        self.chart_test_3.setChart(self.c3)
-
-        self.c4 = ChartDesign(
-            title="Canal 4",
-            parameters={
-                "x": [0],
-                "y": [0]
-            }
-        )
-        self.series.append(self.c4.dynamic_spline())
-        self.chart_test_4.setChart(self.c4)
-
-        self.c5 = ChartDesign(
-            title="Canal 5",
-            parameters={
-                "x": [0],
-                "y": [0]
-            }
-        )
-        self.series.append(self.c5.dynamic_spline())
-        self.chart_test_5.setChart(self.c5)
-
-        self.c6 = ChartDesign(
-            title="Canal 6",
-            parameters={
-                "x": [0],
-                "y": [0]
-            }
-        )
-        self.series.append(self.c6.dynamic_spline())
-        self.chart_test_6.setChart(self.c6)
-
-        self.c7 = ChartDesign(
-            title="Canal 7",
-            parameters={
-                "x": [0],
-                "y": [0]
-            }
-        )
-        self.series.append(self.c7.dynamic_spline())
-        self.chart_test_7.setChart(self.c7)
-
-        self.c8 = ChartDesign(
-            title="Canal 8",
-            parameters={
-                "x": [0],
-                "y": [0]
-            }
-        )
-        self.series.append(self.c8.dynamic_spline())
-        self.chart_test_8.setChart(self.c8)
-
-        self.c9 = ChartDesign(
-            title="Canal 9",
-            parameters={
-                "x": [0],
-                "y": [0]
-            }
-        )
-        self.series.append(self.c9.dynamic_spline())
-        self.chart_test_9.setChart(self.c9)
-
-        self.bars_usage = ChartDesign(
+        self.bars_usage = BarChart(
             title="%  Ocupación de los canales.",
             parameters=self.channels.copy()
         )
         self.bars_usage.plot_bar_chart()
         self.chart_bars_view.setChart(self.bars_usage)
 
-    def __build_simulation(self):
+    def __prepare_simulation(self):
+        '''Prepara el escenario de simulación'''
+        self.__sim_button_mannager(True, False, False, False)
+        self.__speed_button_mannager(False, False, False, False)
         self.__plot_init()
 
     def save_chart(self):
@@ -189,6 +126,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
                 "channels": self.channels.copy(),
                 "series": self.series.copy(),
                 "parameters": self.parameters.copy(),
+                "generators": self.generators.copy(),
                 "callback": self.__finish_sim
             },
             name="Simulation-{}".format(uuid4())
@@ -261,7 +199,6 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.decrease_time_speed_button.setEnabled(f2)
         self.max_time_speed_button.setEnabled(f3)
         self.defaultt_time_speed_button.setEnabled(f4)
-        pass
 
     def __finish_sim(self):
         self.__sim_button_mannager(True, False, False, False)

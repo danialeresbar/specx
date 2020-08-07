@@ -1,38 +1,62 @@
+from datetime import datetime, timedelta
+from PyQt5.QtCore import Qt
 import threading
-# from datetime import datetime, timedelta
 import time
 
 
 class SimulationThread(threading.Thread):
     def __init__(self, target=None, name=None, args=(), kwargs=None):
         threading.Thread.__init__(self, target=target, name=name)
-        self.channels = [channel for channel in kwargs.get("channels").values()]
+        self.channels = [
+            channel for channel in kwargs.get("channels").values()
+        ]
         self.series = [serie for serie in kwargs.get("series")]
         self.parameters = kwargs.get("parameters")
+        self.generators = kwargs.get("generators")
         self.wait = target
-        self.name = name
         self.finish_callback = kwargs.get("callback")
+        self.file_content = list()
+
         self.pause_cond = threading.Condition(threading.Lock())
         self.paused = False  # Indicador de hilo pausado
         self.stop_cond = threading.Condition(threading.Lock())
         self.stopped = False  # Indicador de hilo detenido
 
     def run(self):
-        '''Generación de VA y actualización de gráficas'''
-        # limit = self.parameters.get("sampling")*30
+        '''Generación de Variables aleatorias y actualización de gráficas'''
+        index = 0
+        limit = self.parameters.get("sampling")*30
         # threshold = self.parameters.get("threshold")
-        self.series[0].append(6, 0.69)
+        point = datetime.now()
 
         for channel in self.channels:
-            with self.stop_cond:
-                if self.stopped:
-                    break
-                # Generar VA
-                time.sleep(self.wait())
-                # print("Waiting")
+            counter = 0
+            random_vars = list()
+            generator = self.generators[index]
+            serie = self.series[index]
+
+            while(counter < limit and not self.stopped):
+                var = generator(channel["distribution"].get("parameters"))
+                self.__update_chart(serie, counter*2, var)
+                self.__update_file_content(
+                    point, channel.get("frequency"),
+                    channel["distribution"].get("name"),
+                    var
+                )
+                time.sleep(2/self.wait())
+                counter += 1
+                point += timedelta(seconds=2)
+                random_vars.append(var)
                 with self.pause_cond:
                     while self.paused:
                         self.pause_cond.wait()
+
+            with self.stop_cond:
+                if self.stopped:
+                    break
+
+            self.__update_bars(random_vars)
+            index += 1
 
         self.finish_callback()
         print("Termina mi ejecución")
@@ -56,13 +80,25 @@ class SimulationThread(threading.Thread):
         self.stopped = True
         self.stop_cond.acquire  # Establece el indicador interno a True
 
-    def __var_checker(var):
+    def __update_chart(self, serie, x, y):
+        serie.append(x, y)
+        if x >= 12:
+            dx = serie.chart().plotArea().width() / serie.chart().axes(Qt.Horizontal, serie)[0].tickCount()
+            serie.chart().scroll(dx, 0)
+
+    def __update_bars(self, values):
+        pass
+
+    def __update_file_content(self, point, frequency, distribution, var):
+        line = point.strftime("%m-%d-%Y-%H:%M:%S") + ';' + frequency + ';' + distribution + ';' + str(var)
+        self.file_content.append(line)
+
+    def __var_checker(self, var):
         '''Verifica que la variable aleatoria generada esté dentro del rango
         establecido de valores.'''
         if var < 0:
             return 0
-
-        return var if var < 0.75 else 0.75
+        return var if var < 0.8 else 0.8
 
 
 class FileThread(threading.Thread):

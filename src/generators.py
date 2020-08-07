@@ -13,8 +13,8 @@ SEED_1 = time.time()
 SEED_2 = time.time()*1000
 
 
-# Generador congruencial usado por JAVA y POSIX
 def cong_mixto_posix():
+    '''Generador congruencial usado por JAVA y POSIX'''
     global SEED_1
     a = 25214903917
     m = (2**48) - 1
@@ -22,8 +22,8 @@ def cong_mixto_posix():
     return SEED_1/m
 
 
-# Generador congruencial usado por GCC
 def cong_mixto_gcc():
+    '''Generador congruencial usado por gcc'''
     global SEED_2
     a = 1103515245
     m = (2**31) - 1
@@ -31,11 +31,11 @@ def cong_mixto_gcc():
     return SEED_2/m
 
 
-def bernoulli(p):
+def bernoulli(args):
     '''Genera una variable aleatoria que sigue una distribución
     de Bernoulli con una probabilidad de éxito p'''
     U = cong_mixto_posix()
-    return 1 if U < p else 0
+    return 1 if U < args[0] else 0
 
 
 def beta(args):
@@ -72,7 +72,7 @@ def laplace(args):
     return r_v
 
 
-def lognormal_3p(args):
+def lognormal(args):
     '''Genera una variable aleatoria que sigue una distribución
     Lognormal de acuerdo a los parámetros enviados'''
     r_v = stats.lognorm.rvs(args[1], loc=args[2], scale=mt.exp(args[0]))
@@ -93,7 +93,7 @@ def rayleigh(args):
     return r_v
 
 
-def uniform_inverse_transformation(args):
+def uniform(args):
     '''Genera una variable aleatoria que sigue una distribución
     Uniforme continua de acuerdo a los parámetros enviados,
     usando el algoritmo de la transformación inversa'''

@@ -6,10 +6,12 @@ from PyQt5.QtChart import (
     QBarSet,
     QAbstractBarSeries,
     QLegend,
+    QLineSeries,
     QSplineSeries,
 )
 from PyQt5.QtCore import (
     Qt,
+    QEasingCurve,
     QMargins
 )
 from PyQt5.QtGui import (
@@ -24,7 +26,7 @@ FONT_LABEL = QFont()
 FONT_TITLE = QFont()
 
 
-class ChartDesign(QChart):
+class PDFChart(QChart):
     def __init__(self, **kwargs):
         super().__init__()
         self.title = kwargs.get("title", "Título del gráfico")
@@ -33,22 +35,12 @@ class ChartDesign(QChart):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.setBackgroundRoundness(0)
         self.setTitle(self.title)
-        self.setMargins(QMargins(10, 10, 10, 10))
+        self.setMargins(QMargins(20, 20, 20, 20))
         self.setAnimationOptions(QChart.SeriesAnimations)
         self.setTheme(self.ChartThemeLight)
         self.setDropShadowEnabled(True)
 
-    def plot_bar_chart(self):
-        # Etiquetas para eje x
-        x = list()
-        for k, v in self.parameters.items():
-            x.append(v.get("frequency"))
-
-        bars = [value for value in range(10, 100, 10)]
-        self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_label_format="%.2f %", y_max=100, y_tickcount=5, legends=x, legend_alignment=Qt.AlignBottom)
-
     def plot_bernoulli(self):
-        # Etiquetas para eje x
         legends = ["Probabilidad de\néxito", "Probabilidad de\nfallo"]
         x = ["Éxito", "Fallo"]
         bars = [self.parameters.get("success"), self.parameters.get("fail")]
@@ -202,25 +194,6 @@ class ChartDesign(QChart):
         serie.setName("γ={:.4f}, α={:.4f}, μ={:.4f}".format(gamma, alpha, mu))
         self.add_spline_series(serie, x, y)
 
-    def dynamic_spline(self):
-        global FONT_LABEL, FONT_TITLE
-        FONT_TITLE.setPointSizeF(10)
-        FONT_LABEL.setPointSizeF(8)
-        serie = QSplineSeries()
-        serie.append(0, 0)
-        pen = serie.pen()
-        pen.setColor(QColor("#5f85db"))
-        pen.setWidth(2)
-        serie.setPen(pen)
-        self.addSeries(serie)
-        self.createDefaultAxes()
-        self.axes(Qt.Vertical, serie)[0].setRange(0, 0.9)
-        self.axes(Qt.Horizontal, serie)[0].setRange(0, 10)
-        self.axes(Qt.Horizontal, serie)[0].setTickCount(6)
-        self.legend().setVisible(False)
-        self.setTitleFont(FONT_TITLE)
-        return serie
-
     def add_spline_series(self, serie, x, y):
         global FONT_LABEL, FONT_TITLE
         FONT_TITLE.setPointSizeF(12)
@@ -262,6 +235,134 @@ class ChartDesign(QChart):
             if bars[index] < y_max*0.2:
                 series.setLabelsPosition(QAbstractBarSeries.LabelsOutsideEnd)
 
+            else:
+                series.setLabelsPosition(QAbstractBarSeries.LabelsCenter)
+            self.addSeries(series)
+
+        self.createDefaultAxes()
+        axis_x = self.axes(Qt.Horizontal)[0]
+        self.removeAxis(axis_x)
+        axis_x = QBarCategoryAxis()
+        axis_x.append(x)
+        self.addAxis(axis_x, Qt.AlignBottom)
+        axis_x.setLabelsFont(FONT_LABEL)
+        axis_y = self.axes(Qt.Vertical, series)[0]
+        axis_y.setRange(0, y_max)
+        axis_y.setTickCount(y_tickcount)
+        axis_y.setLabelFormat(y_label_format)
+        axis_y.setLabelsFont(FONT_LABEL)
+        self.legend().setAlignment(legend_alignment)
+        self.legend().setVisible(False)
+        self.setTitleFont(FONT_TITLE)
+
+
+class SplineChart(QChart):
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.title = kwargs.get("title", "Título del gráfico")
+        self.parameters = kwargs.get("parameters", None)
+
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.setBackgroundRoundness(0)
+        self.setTitle(self.title)
+        self.setMargins(QMargins(10, 10, 10, 10))
+        self.setAnimationOptions(QChart.NoAnimation)
+        self.setTheme(self.ChartThemeLight)
+
+    def dynamic_spline(self):
+        global FONT_LABEL, FONT_TITLE
+        FONT_TITLE.setPointSizeF(10)
+        FONT_LABEL.setPointSizeF(8)
+        serie = QSplineSeries()
+        pen = serie.pen()
+        pen.setColor(QColor("#5f85db"))
+        pen.setWidth(2)
+        serie.setPen(pen)
+        self.addSeries(serie)
+        self.createDefaultAxes()
+        self.axes(Qt.Vertical, serie)[0].setRange(-0.2, 1.2)
+        self.axes(Qt.Horizontal, serie)[0].setRange(0, 10)
+        self.axes(Qt.Horizontal, serie)[0].setTickCount(6)
+        self.legend().setVisible(False)
+        self.setTitleFont(FONT_TITLE)
+        return serie
+
+
+class LineChart(QChart):
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.title = kwargs.get("title", "Título del gráfico")
+        self.parameters = kwargs.get("parameters", None)
+
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.legend().setVisible(False)
+        self.setBackgroundRoundness(0)
+        self.setTitle(self.title)
+        self.setMargins(QMargins(10, 10, 10, 10))
+        self.setAnimationEasingCurve(QEasingCurve.Linear)
+        self.setAnimationOptions(QChart.NoAnimation)
+        self.setTheme(self.ChartThemeLight)
+
+    def dynamic_line(self):
+        global FONT_LABEL, FONT_TITLE
+        FONT_TITLE.setPointSizeF(10)
+        FONT_LABEL.setPointSizeF(8)
+        serie = QLineSeries()
+        pen = serie.pen()
+        pen.setColor(QColor("#5f85db"))
+        pen.setWidth(2)
+        serie.setPen(pen)
+        self.addSeries(serie)
+        self.createDefaultAxes()
+        self.axes(Qt.Vertical, serie)[0].setRange(0, 1)
+        self.axes(Qt.Vertical, serie)[0].setTickCount(3)
+        self.axes(Qt.Horizontal, serie)[0].setRange(0, 10)
+        self.axes(Qt.Horizontal, serie)[0].setTickCount(5)
+        # self.axes(Qt.Horizontal, serie)[0].setLabelsVisible(False)
+        self.setTitleFont(FONT_TITLE)
+        return serie
+
+
+class BarChart(QChart):
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.title = kwargs.get("title", "Título del gráfico")
+        self.parameters = kwargs.get("parameters", None)
+
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.setBackgroundRoundness(0)
+        self.setTitle(self.title)
+        self.setMargins(QMargins(10, 10, 10, 10))
+        self.setAnimationOptions(QChart.SeriesAnimations)
+        self.setTheme(self.ChartThemeLight)
+
+    def plot_bar_chart(self):
+        # Etiquetas para eje x
+        x = list()
+        for k, v in self.parameters.items():
+            x.append(v.get("frequency"))
+
+        bars = [value for value in range(10, 100, 10)]
+        self.add_bars(x=x, bars=bars, bar_colors=None, bar_label_format="@value %", y_label_format="%.2f %", y_max=100, y_tickcount=5, legends=x, legend_alignment=Qt.AlignBottom)
+
+    def add_bars(self, x, bars, bar_colors, bar_label_format, y_label_format, y_max, y_tickcount, legends, legend_alignment):
+        global FONT_LABEL, FONT_TITLE
+        FONT_TITLE.setPointSizeF(12)
+        FONT_TITLE.setWeight(QFont.Bold)
+        FONT_LABEL.setPointSizeF(8)
+        for index in range(len(bars)):
+            series = QBarSeries()
+            bar_set = QBarSet(legends[index])
+            if bar_colors:
+                bar_set.setColor(bar_colors[index])
+            bar_set.setLabelColor(Qt.black)
+            bar_set.setLabelFont(FONT_LABEL)
+            bar_set.append(bars[index])
+            series.append(bar_set)
+            series.setLabelsVisible(True)
+            series.setLabelsFormat(bar_label_format)
+            if bars[index] < y_max*0.2:
+                series.setLabelsPosition(QAbstractBarSeries.LabelsOutsideEnd)
             else:
                 series.setLabelsPosition(QAbstractBarSeries.LabelsCenter)
             self.addSeries(series)
