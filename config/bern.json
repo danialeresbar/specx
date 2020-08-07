@@ -1,0 +1,100 @@
+{
+    "channels": {
+        "channel_1": {
+            "id": 1,
+            "frequency": "473 MHz",
+            "distribution": {
+                "name": "Bernoulli",
+                "parameters": [
+                    0.30000000000000004
+                ]
+            }
+        },
+        "channel_2": {
+            "id": 2,
+            "frequency": "479 MHz",
+            "distribution": {
+                "name": "Bernoulli",
+                "parameters": [
+                    0.7
+                ]
+            }
+        },
+        "channel_3": {
+            "id": 3,
+            "frequency": "485 MHz",
+            "distribution": {
+                "name": "Bernoulli",
+                "parameters": [
+                    0.5
+                ]
+            }
+        },
+        "channel_4": {
+            "id": 4,
+            "frequency": "491 MHz",
+            "distribution": {
+                "name": "Bernoulli",
+                "parameters": [
+                    0.8999999999999999
+                ]
+            }
+        },
+        "channel_5": {
+            "id": 5,
+            "frequency": "497 MHz",
+            "distribution": {
+                "name": "Bernoulli",
+                "parameters": [
+                    0.10000000000000003
+                ]
+            }
+        },
+        "channel_6": {
+            "id": 6,
+            "frequency": "503 MHz",
+            "distribution": {
+                "name": "Bernoulli",
+                "parameters": [
+                    0.5
+                ]
+            }
+        },
+        "channel_7": {
+            "id": 7,
+            "frequency": "509 MHz",
+            "distribution": {
+                "name": "Bernoulli",
+                "parameters": [
+                    0.5
+                ]
+            }
+        },
+        "channel_8": {
+            "id": 8,
+            "frequency": "551 MHz",
+            "distribution": {
+                "name": "Bernoulli",
+                "parameters": [
+                    0.7
+                ]
+            }
+        },
+        "channel_9": {
+            "id": 9,
+            "frequency": "557 MHz",
+            "distribution": {
+                "name": "Bernoulli",
+                "parameters": [
+                    0.20000000000000004
+                ]
+            }
+        }
+    },
+    "parameters": {
+        "sampling": 5,
+        "threshold": 0.33,
+        "energy": false,
+        "usage": false
+    }
+}
