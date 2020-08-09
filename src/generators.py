@@ -1,3 +1,4 @@
+from decimal import Decimal
 import math as mt
 import numpy as np
 from scipy import stats
@@ -36,7 +37,7 @@ def __var_checker(var):
     establecido de valores.'''
     if var < 0:
         return 0
-        return var if var < 0.75 else 0.75
+    return var if var < 0.75 else 0.75
 
 
 def bernoulli(args):
@@ -56,8 +57,8 @@ def beta(args):
 def gamma(args):
     '''Genera una variable aleatoria que sigue una distribución
     Gamma de acuerdo a los parámetros enviados'''
-    r_v = stats.gamma.rvs(args[0], loc=0, scale=args[1])
-    return r_v
+    r_v = stats.gamma.rvs(args[0], loc=args[2], scale=args[1])
+    return __var_checker(r_v)
 
 
 def gumbel_inverse_transformation(u, B):
@@ -70,21 +71,21 @@ def gumbel(args):
     '''Genera una variable aleatoria que sigue una distribución
     Gumbel (extremos) de acuerdo a los parámetros enviados'''
     r_v = np.random.gumbel(loc=args[0], scale=args[1])
-    return r_v
+    return __var_checker(r_v)
 
 
 def laplace(args):
     '''Genera una variable aleatoria que sigue una distribución
     de Laplace de acuerdo a los parámetros enviados'''
     r_v = stats.laplace.rvs(loc=args[0], scale=args[1])
-    return r_v
+    return __var_checker(r_v)
 
 
 def lognormal(args):
     '''Genera una variable aleatoria que sigue una distribución
     Lognormal de acuerdo a los parámetros enviados'''
     r_v = stats.lognorm.rvs(args[1], loc=args[2], scale=mt.exp(args[0]))
-    return r_v
+    return __var_checker(r_v)
 
 
 def normal(args):
@@ -107,7 +108,7 @@ def uniform(args):
     usando el algoritmo de la transformación inversa'''
     U = cong_mixto_posix()
     X = args[0] + (args[1]-args[0])*U
-    return X
+    return __var_checker(X)
 
 
 def weibull_inverse_transformation(a, b, y):
@@ -122,5 +123,5 @@ def weibull_inverse_transformation(a, b, y):
 def weibull(args):
     '''Genera una variable aleatoria que sigue una distribución
     Weibull de acuerdo a los parámetros enviados'''
-    r_v = stats.weibull_min.rvs(c=args[0], loc=args[2], scale=args[1], size=1)
-    return r_v
+    r_v = stats.weibull_min.rvs(c=args[0], loc=args[2], scale=args[1])
+    return __var_checker(r_v)

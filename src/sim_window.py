@@ -1,13 +1,10 @@
 from chart_manager import BarChart, LineChart, SplineChart
+import constants as c
+from datetime import datetime
 from qt_gui.sim_window_qt import Ui_sim_window, QtWidgets
 from PyQt5.QtGui import QPixmap
-from thread import SimulationThread
+from thread import FileThread, SimulationThread
 from uuid import uuid4
-
-
-DEFAULT_SPEED = 1
-MAX_SPEED = 64
-MIN_SPEED = 1/MAX_SPEED
 
 
 class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
@@ -15,13 +12,14 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         super(SimWindow, self).__init__(*args)
         self.setupUi(self)
 
-        self.channels = kwargs.get("channels", None)
-        self.parameters = kwargs.get("parameters", None)
-        self.generators = kwargs.get("generators", None)
-        self.series = list()
+        self.channels = kwargs.get('channels', None)
+        self.parameters = kwargs.get('parameters', None)
+        self.generators = kwargs.get('generators', None)
+        self.simulation_filepath = f'../simulations/Simulation-\
+            {datetime.now().strftime("%m-%d-%Y-%H-%M-%S")}.csv'
         self.speed = 1
 
-        self.plot_views = [
+        self.__plot_views = [
             self.chart_test_1,
             self.chart_test_2,
             self.chart_test_3,
@@ -35,7 +33,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
 
         self.__prepare_simulation()
 
-        # Conexión de señales de los botones
+        # Conexión de las señales de los botones
         self.start_button.clicked.connect(self.__start)
         self.play_button.clicked.connect(self.__resume)
         self.pause_button.clicked.connect(self.__pause)
@@ -45,9 +43,12 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.max_time_speed_button.clicked.connect(self.__max_speed)
         self.defaultt_time_speed_button.clicked.connect(self.__default_speed)
         self.save_chart_button.clicked.connect(self.save_chart)
+        self.show_file_button.clicked.connect(self.show_outfile)
 
     def closeEvent(self, event):
-        '''Sobre-escritura del método closeEvent para el cierre de la app.'''
+        """
+            Sobre-escritura del método closeEvent para el cierre de la ventana.
+        """
         # close = QtWidgets.QMessageBox.information(
         #     self,
         #     'Salir',
@@ -61,8 +62,8 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         #     event.ignore()
         event.accept()
 
-    def __plot_init(self):
-        '''Construye e inicializa los gráficos de la simulación.'''
+    def __plots_init(self):
+        """Construye e inicializa los gráficos de la simulación."""
         index = 0
         for key, value in self.channels.items():
             if value["distribution"].get("name") == "Bernoulli":
@@ -70,13 +71,13 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
                 self.series.append(
                     chart.dynamic_line()
                 )
-                self.plot_views[index].setChart(chart)
+                self.__plot_views[index].setChart(chart)
             else:
                 chart = SplineChart(title="Canal {}".format(value.get("id")))
                 self.series.append(
                     chart.dynamic_spline()
                 )
-                self.plot_views[index].setChart(chart)
+                self.__plot_views[index].setChart(chart)
             index += 1
 
         self.bars_usage = BarChart(
@@ -87,10 +88,11 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.chart_bars_view.setChart(self.bars_usage)
 
     def __prepare_simulation(self):
-        '''Prepara el escenario de simulación'''
+        """Prepara el escenario de simulación"""
         self.__sim_button_mannager(True, False, False, False)
         self.__speed_button_mannager(False, False, False, False)
-        self.__plot_init()
+        self.series = list()
+        self.__plots_init()
 
     def save_chart(self):
         filepath, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -120,24 +122,33 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
                 )
 
     def show_outfile(self):
-        pass
+        self.__file_thread = FileThread(
+            name=f'File-{self.simulation_filepath}',
+            kwargs={
+                'filepath': self.simulation_filepath
+            }
+        )
+        self.__file_thread.setDaemon(True)
+        self.__file_thread.start()
 
     def __start(self):
         self.__thread = SimulationThread(
-            target=self.get_speed_value,
+            name=f'Simulation-{uuid4()}',
+            target=self.speed_value,
             kwargs={
-                "channels": self.channels.copy(),
-                "series": self.series.copy(),
-                "parameters": self.parameters.copy(),
-                "generators": self.generators.copy(),
-                "callback": self.__finish_sim
-            },
-            name="Simulation-{}".format(uuid4())
+                'callback': self.__finish_sim,
+                'channels': self.channels.copy(),
+                'filepath': self.simulation_filepath,
+                'generators': self.generators.copy(),
+                'parameters': self.parameters.copy(),
+                'series': self.series.copy()
+            }
         )
         self.__thread.setDaemon(True)
         self.__thread.start()
         self.__sim_button_mannager(False, False, True, True)
         self.__speed_button_mannager(True, True, True, True)
+        self.start_button.setText("REINICIAR")
 
     def __resume(self):
         self.__thread.resume()
@@ -156,8 +167,9 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
                 self.__thread.stop()
             self.__speed_button_mannager(False, False, False, False)
             self.__sim_button_mannager(True, False, False, False)
+        self.__prepare_simulation()
 
-    def get_speed_value(self):
+    def speed_value(self):
         return self.speed
 
     def increase_speed(self):
@@ -167,7 +179,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
             self.time_speed_label.setText("X{}".format(self.speed))
         else:
             self.time_speed_label.setText("X{}".format(int(self.speed)))
-        if self.speed == MAX_SPEED:
+        if self.speed == c.MAX_SPEED:
             self.__speed_button_mannager(False, True, False, True)
 
     def decrease_speed(self):
@@ -177,7 +189,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
             self.time_speed_label.setText("X{}".format(self.speed))
         else:
             self.time_speed_label.setText("X{}".format(int(self.speed)))
-        if self.speed == MIN_SPEED:
+        if self.speed == c.MIN_SPEED:
             self.__speed_button_mannager(True, False, True, True)
 
     def __default_speed(self):
@@ -186,8 +198,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.__speed_button_mannager(True, True, True, True)
 
     def __max_speed(self):
-        global MAX_SPEED
-        self.speed = MAX_SPEED
+        self.speed = c.MAX_SPEED
         self.time_speed_label.setText("X{}".format(int(self.speed)))
         self.__speed_button_mannager(False, True, False, True)
 
@@ -203,10 +214,10 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.max_time_speed_button.setEnabled(f3)
         self.defaultt_time_speed_button.setEnabled(f4)
 
-    def __finish_sim(self):
+    def __finish_sim(self, interrupted):
         self.__sim_button_mannager(True, False, False, False)
         self.__speed_button_mannager(False, False, False, False)
         self.speed = 1
         self.time_speed_label.setText("X{}".format(int(self.speed)))
-        self.show_file_button.setEnabled(True)
-        self.save_chart_button.setEnabled(True)
+        self.show_file_button.setEnabled(interrupted)
+        self.save_chart_button.setEnabled(interrupted)

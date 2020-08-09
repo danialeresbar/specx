@@ -1,3 +1,5 @@
+import constants as c
+import math as mt
 import numpy as np
 from PyQt5.QtChart import (
     QChart,
@@ -38,7 +40,6 @@ class PDFChart(QChart):
         self.setMargins(QMargins(20, 20, 20, 20))
         self.setAnimationOptions(QChart.SeriesAnimations)
         self.setTheme(self.ChartThemeLight)
-        self.setDropShadowEnabled(True)
 
     def plot_bernoulli(self):
         legends = ["Probabilidad de\néxito", "Probabilidad de\nfallo"]
@@ -48,7 +49,6 @@ class PDFChart(QChart):
             QColorConstants.Svg.lightgreen,
             QColorConstants.Svg.indianred
         ]
-
         self.add_bars(x=x, bars=bars, bar_colors=bar_colors, bar_label_format="@value", y_label_format="", y_max=1, y_tickcount=6, legends=legends, legend_alignment=Qt.AlignBottom)
 
     def plot_beta(self):
@@ -66,7 +66,8 @@ class PDFChart(QChart):
 
         serie = QSplineSeries()
         serie.setName(
-            "α={:.4f}, β={:.4f}, a={:.4f}, b={:.4f},".format(alpha, beta, a, b)
+            f'{c.ALPHA_LETTER}={alpha:.4f}, {c.BETA_LETTER}={beta:.4f}, \
+                a={a:.4f}, b={b:.4f}'
         )
         self.add_spline_series(serie, x, y)
 
@@ -82,6 +83,11 @@ class PDFChart(QChart):
         y = stats.gamma.pdf(x, alpha, loc=gamma, scale=lmbda)
 
         serie = QSplineSeries()
+        c.GAMMA_LETTER
+        serie.setName(
+            f'{c.ALPHA_LETTER}={alpha:.4f}, {c.LAMBDA_LETTER}={lmbda:.4f}, \
+                {c.GAMMA_LETTER}={gamma:.4f}'
+        )
         serie.setName(
             "α={:.4f}, λ={:.4f}, γ={:.4f}".format(alpha, lmbda, gamma)
         )
@@ -97,9 +103,10 @@ class PDFChart(QChart):
         )
         y = stats.gumbel_r.pdf(x, loc=mu, scale=sigma)
 
-        # Serie con los valores (x,y)
         serie = QSplineSeries()
-        serie.setName("μ={:.4f}, σ={:.4f}".format(mu, sigma))
+        serie.setName(
+            f'{c.MU_LETTER}={mu:.4f}, {c.SIGMA_LETTER}={sigma:.4f}'
+        )
         self.add_spline_series(serie, x, y)
 
     def plot_laplace(self):
@@ -112,9 +119,10 @@ class PDFChart(QChart):
         )
         y = stats.laplace.pdf(x, loc=mu, scale=b)
 
-        # Serie con los valores (x,y)
         serie = QSplineSeries()
-        serie.setName("μ={:.4f}, Δ={:.4f}".format(mu, b))
+        serie.setName(
+            f'{c.MU_LETTER}={mu:.4f}, b={b:.4f}'
+        )
         self.add_spline_series(serie, x, y)
 
     def plot_lognorm(self):
@@ -122,15 +130,17 @@ class PDFChart(QChart):
         sigma = self.parameters.get("sigma")
         gamma = self.parameters.get("gamma")
         x = np.linspace(
-            stats.lognorm.ppf(0.01, sigma, loc=mu, scale=gamma),
-            stats.lognorm.ppf(0.99, sigma, loc=mu, scale=gamma),
+            stats.lognorm.ppf(0.01, sigma, loc=gamma, scale=mt.exp(mu)),
+            stats.lognorm.ppf(0.99, sigma, loc=gamma, scale=mt.exp(mu)),
             100
         )
-        y = stats.lognorm.pdf(x, sigma, loc=mu, scale=gamma)
+        y = stats.lognorm.pdf(x, sigma, loc=gamma, scale=mt.exp(mu))
 
-        # Serie con los valores (x,y)
         serie = QSplineSeries()
-        serie.setName("μ={:.4f}, σ²={:.4f}, γ={:.4f}".format(mu, sigma, gamma))
+        serie.setName(
+            f'{c.MU_LETTER}={mu:.4f}, {c.SIGMA_LETTER}={sigma:.4f}, \
+                {c.GAMMA_LETTER}={gamma:.4f}'
+        )
         self.add_spline_series(serie, x, y)
 
     def plot_norm(self):
@@ -145,7 +155,7 @@ class PDFChart(QChart):
 
         # Serie con los valores (x,y)
         serie = QSplineSeries()
-        serie.setName("μ={:.4f}, σ={:.4f}".format(mu, sigma))
+        serie.setName(f'{c.MU_LETTER}={mu:.4f}, {c.SIGMA_LETTER}={sigma:.4f}')
         self.add_spline_series(serie, x, y)
 
     def plot_rayleigh(self):
@@ -158,40 +168,44 @@ class PDFChart(QChart):
         )
         y = stats.rayleigh.pdf(x, loc=lmbda, scale=sigma)
 
-        # Serie con los valores (x,y)
         serie = QSplineSeries()
-        serie.setName("σ={:.4f}, λ={:.4f}".format(sigma, lmbda))
+        serie.setName(
+            f'{c.SIGMA_LETTER}={sigma:.4f}, {c.LAMBDA_LETTER}={lmbda:.4f}'
+        )
         self.add_spline_series(serie, x, y)
 
     def plot_uniform(self):
         a = self.parameters.get("inf")
         b = self.parameters.get("sup")
         x = np.linspace(
-            stats.uniform.ppf(0.01, loc=a, scale=b),
-            stats.uniform.ppf(0.99, loc=a, scale=b),
+            stats.uniform.ppf(0.01, loc=a, scale=b-a),
+            stats.uniform.ppf(0.99, loc=a, scale=b-a),
             100
         )
-        y = stats.uniform.pdf(x, loc=a, scale=b)
+        y = stats.uniform.pdf(x, loc=a, scale=b-a)
 
         # Serie con los valores (x,y)
         serie = QSplineSeries()
-        serie.setName("a={:.4f}, b={:.4f}".format(a, b))
+        serie.setName(f'a={a:.4f}, b={b:.4f}')
         self.add_spline_series(serie, x, y)
 
     def plot_weibull(self):
-        gamma = self.parameters.get("gamma")
         alpha = self.parameters.get("alpha")
-        mu = self.parameters.get("mu")
+        beta = self.parameters.get("beta")
+        gamma = self.parameters.get("gamma")
         x = np.linspace(
-            stats.weibull_min.ppf(0.01, gamma, loc=mu, scale=alpha),
-            stats.weibull_min.ppf(0.99, gamma, loc=mu, scale=alpha),
+            stats.weibull_min.ppf(0.01, alpha, loc=gamma, scale=beta),
+            stats.weibull_min.ppf(0.99, alpha, loc=gamma, scale=beta),
             100
         )
-        y = stats.weibull_min.pdf(x, gamma, loc=mu, scale=alpha)
+        y = stats.weibull_min.pdf(x, alpha, loc=gamma, scale=beta)
 
-        # Serie con los valores (x,y)
         serie = QSplineSeries()
-        serie.setName("γ={:.4f}, α={:.4f}, μ={:.4f}".format(gamma, alpha, mu))
+        serie.setName(
+            f'{c.ALPHA_LETTER}={alpha:.4f}, {c.BETA_LETTER}={beta:.4f}, \
+                {c.GAMMA_LETTER}={gamma:.4f}'
+        )
+        serie.setName("α={:.4f}, β={:.4f}, γ={:.4f}".format(alpha, beta, gamma))
         self.add_spline_series(serie, x, y)
 
     def add_spline_series(self, serie, x, y):
@@ -207,7 +221,7 @@ class PDFChart(QChart):
         serie.setPen(pen)
         self.addSeries(serie)
         self.createDefaultAxes()
-        self.axes(Qt.Vertical, serie)[0].setRange(0, max(y)+0.05)
+        self.axes(Qt.Vertical, serie)[0].setRange(0, max(y)+0.1)
         self.legend().setVisible(True)
         self.legend().setMarkerShape(QLegend.MarkerShapeFromSeries)
         self.legend().setAlignment(Qt.AlignTop)
@@ -276,12 +290,13 @@ class SplineChart(QChart):
         serie = QSplineSeries()
         pen = serie.pen()
         pen.setColor(QColor("#5f85db"))
-        pen.setWidth(2)
+        pen.setWidth(3)
         serie.setPen(pen)
+        serie.setPointsVisible(True)
         self.addSeries(serie)
         self.createDefaultAxes()
-        self.axes(Qt.Vertical, serie)[0].setRange(0, 1)
-        self.axes(Qt.Vertical, serie)[0].setTickCount(4)
+        self.axes(Qt.Vertical, serie)[0].setRange(0, 0.8)
+        self.axes(Qt.Vertical, serie)[0].setTickCount(3)
         self.axes(Qt.Horizontal, serie)[0].setRange(0, 10)
         self.axes(Qt.Horizontal, serie)[0].setTickCount(5)
         self.legend().setVisible(False)
@@ -311,7 +326,7 @@ class LineChart(QChart):
         serie = QLineSeries()
         pen = serie.pen()
         pen.setColor(QColor("#5f85db"))
-        pen.setWidth(2)
+        pen.setWidth(3)
         serie.setPen(pen)
         serie.setPointsVisible(True)
         self.addSeries(serie)

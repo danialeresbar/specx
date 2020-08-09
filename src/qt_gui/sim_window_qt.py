@@ -442,6 +442,7 @@ class Ui_sim_window(object):
         self.save_chart_button.setIconSize(QtCore.QSize(16, 16))
         self.save_chart_button.setFlat(True)
         self.save_chart_button.setObjectName("save_chart_button")
+        self.save_chart_button.setEnabled(False)
         self.sub_layout_3.addWidget(self.save_chart_button)
 
         self.show_file_button = QtWidgets.QPushButton(self.file_button_widget)
@@ -455,6 +456,7 @@ class Ui_sim_window(object):
         self.show_file_button.setIconSize(QtCore.QSize(16, 16))
         self.show_file_button.setFlat(True)
         self.show_file_button.setObjectName("show_file_button")
+        self.show_file_button.setEnabled(False)
         self.sub_layout_3.addWidget(self.show_file_button)
 
         self.control_layout.addWidget(self.file_button_widget)

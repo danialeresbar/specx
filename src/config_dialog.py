@@ -1,3 +1,4 @@
+import constants as c
 from qt_gui.config_dialog_qt import Ui_config_dialog, QtWidgets
 from chart_manager import PDFChart
 
@@ -8,21 +9,20 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         self.setupUi(self)
 
         self.distributions = {
-            "Bernoulli": self.bernoulli,
-            "Beta": self.beta,
-            "Gamma": self.gamma,
-            "Gumbel max": self.gumbel,
-            "Laplace": self.laplace,
-            "Lognormal": self.lognormal,
-            "Normal": self.norm,
-            "Rayleigh": self.rayleigh,
-            "Uniforme": self.uniform,
-            "Weibull": self.weibull,
+            c.BERNOULLI: self.bernoulli,
+            c.BETA: self.beta,
+            c.GAMMA: self.gamma,
+            c.GUMBEL: self.gumbel,
+            c.LAPLACE: self.laplace,
+            c.LOGNORM: self.lognormal,
+            c.NORM: self.norm,
+            c.RAYLEIGH: self.rayleigh,
+            c.UNIFORM: self.uniform,
+            c.WEIBULL: self.weibull,
         }
         self.distribution_callback = None
-        self.__load_default_values()
         self.parameters_values = list()
-        self.chart = PDFChart()
+        self.pdf_chart = PDFChart()
 
         # Conexión de las señales de los botones
         self.submit_button.clicked.connect(self.__pick_values)
@@ -40,6 +40,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         self.__load_distribution(kwargs.get("distribution"))
 
     def closeEvent(self, event):
+        """Sobre-escritura del método closeEvent para el cierre de la ventana."""
         self.reject()
         event.accept()
 
@@ -47,12 +48,6 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         if distribution in self.distributions:
             self.distribution_callback = self.distributions.get(distribution)
             self.distribution_callback(update=False)
-
-    def __load_default_values(self):
-        self.param_1.setValue(0.5)
-        self.param_2.setValue(0.2)
-        self.param_3.setValue(0.2)
-        self.param_4.setValue(0.5)
 
     def __pick_values(self):
         params = [self.param_1, self.param_2, self.param_3, self.param_4]
@@ -78,13 +73,13 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
 
     def __button_checked(self):
         btn = self.sender()
-        if btn.isChecked() and btn.text() == "1P":
+        if btn.isChecked() and btn.text() == '1P':
             self.__show_params(True, False, False, False)
 
-        elif btn.isChecked() and btn.text() == "2P":
+        elif btn.isChecked() and btn.text() == '2P':
             self.__show_params(True, True, False, False)
 
-        elif btn.isChecked() and btn.text() == "3P":
+        elif btn.isChecked() and btn.text() == '3P':
             self.__show_params(True, True, True, False)
 
     def __update_plot(self):
@@ -94,11 +89,12 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
         if not update:
             self.__show_radio_buttons(False, False, False)
             self.__show_params(True, False, False, False)
-            self.param_1_label.setText("Probabilidad\nde exito:")
+            self.param_1_label.setText(c.SUCCESS_PROB_LABEL)
             self.param_1.setMinimum(0.0)
             self.param_1.setMaximum(1.0)
+            self.param_1.setValue(c.SUCCESS_PROB)
 
-        self.chart = PDFChart(
+        self.pdf_chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Bernoulli</small></center>
@@ -108,25 +104,29 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
                 "fail": 1 - self.param_1.value(),
             }
         )
-        self.chart.plot_bernoulli()
-        self.chart_view.setChart(self.chart)
+        self.pdf_chart.plot_bernoulli()
+        self.chart_view.setChart(self.pdf_chart)
 
-        self.distribution_callback = self.distributions.get("Bernoulli")
+        self.distribution_callback = self.distributions.get(c.BERNOULLI)
 
     def beta(self, update):
         if not update:
             self.__show_radio_buttons(False, False, False)
             self.__show_params(True, True, True, True)
-            self.param_1_label.setText("Parámetro de\nforma alpha:")
+            self.param_1_label.setText(c.BETA_SHAPE_1_LABEL)
             self.param_1.setMinimum(0.01)
-            self.param_2_label.setText("Parámetro de\nforma beta:")
+            self.param_1.setValue(c.BETA_SHAPE_1)
+            self.param_2_label.setText(c.BETA_SHAPE_2_LABEL)
             self.param_2.setMinimum(0.01)
-            self.param_3_label.setText("Parámetro de\nubicación:")
+            self.param_2.setValue(c.BETA_SHAPE_2)
+            self.param_3_label.setText(c.SHAPE)
             self.param_3.setMinimum(-1000)
-            self.param_4_label.setText("Parámetro de\nescala:")
+            self.param_3.setValue(c.BETA_LOC)
+            self.param_4_label.setText(c.LOCATION)
             self.param_4.setMinimum(0.01)
+            self.param_4.setValue(c.BETA_SCALE)
 
-        self.chart = PDFChart(
+        self.pdf_chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución Beta</small></center>
@@ -138,23 +138,26 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
                 "b": self.param_4.value(),
             }
         )
-        self.chart.plot_beta()
-        self.chart_view.setChart(self.chart)
+        self.pdf_chart.plot_beta()
+        self.chart_view.setChart(self.pdf_chart)
 
-        self.distribution_callback = self.distributions.get("Beta")
+        self.distribution_callback = self.distributions.get(c.BETA)
 
     def gamma(self, update):
         if not update:
             self.__show_radio_buttons(False, True, True)
             self.__show_params(True, True, False, False)
-            self.param_1_label.setText("Parámetro de\nforma:")
+            self.param_1_label.setText(c.SHAPE)
             self.param_1.setMinimum(1)
-            self.param_2_label.setText("Parámetro de\nescala:")
+            self.param_1.setValue(c.GAMMA_SHAPE)
+            self.param_2_label.setText(c.SCALE)
             self.param_2.setMinimum(0.01)
-            self.param_3_label.setText("Parámetro de\nubicación:")
-            self.param_3.setMinimum(0)
+            self.param_2.setValue(c.GAMMA_SCALE)
+            self.param_3_label.setText(c.LOCATION)
+            self.param_3.setMinimum(-10)
+            self.param_2.setValue(c.GAMMA_LOC)
 
-        self.chart = PDFChart(
+        self.pdf_chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Gamma</small></center>
@@ -165,21 +168,23 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
                 "gamma": self.param_3.value(),
             }
         )
-        self.chart.plot_gamma()
-        self.chart_view.setChart(self.chart)
+        self.pdf_chart.plot_gamma()
+        self.chart_view.setChart(self.pdf_chart)
 
-        self.distribution_callback = self.distributions.get("Gamma")
+        self.distribution_callback = self.distributions.get(c.GAMMA)
 
     def gumbel(self, update):
         if not update:
             self.__show_radio_buttons(False, False, False)
             self.__show_params(True, True, False, False)
-            self.param_1_label.setText("Parámetro de\nubicación:")
+            self.param_1_label.setText(c.LOCATION)
             self.param_1.setMinimum(0)
-            self.param_2_label.setText("Parámetro de\nescala:")
+            self.param_2.setValue(c.GUMBEL_LOC)
+            self.param_2_label.setText(c.SCALE)
             self.param_2.setMinimum(0.01)
+            self.param_2.setValue(c.GUMBEL_SCALE)
 
-        self.chart = PDFChart(
+        self.pdf_chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Gumbel</small></center>
@@ -189,21 +194,23 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
                 "sigma": self.param_2.value(),
             }
         )
-        self.chart.plot_gumbel()
-        self.chart_view.setChart(self.chart)
+        self.pdf_chart.plot_gumbel()
+        self.chart_view.setChart(self.pdf_chart)
 
-        self.distribution_callback = self.distributions.get("Gumbel max")
+        self.distribution_callback = self.distributions.get(c.GUMBEL)
 
     def laplace(self, update):
         if not update:
             self.__show_radio_buttons(False, False, False)
             self.__show_params(True, True, False, False)
-            self.param_1_label.setText("Parámetro de\nubicación:")
+            self.param_1_label.setText(c.LOCATION)
             self.param_1.setMinimum(0)
-            self.param_2_label.setText("Parámetro de\nescala:")
+            self.param_1.setValue(c.LAPLACE_LOC)
+            self.param_2_label.setText(c.SCALE)
             self.param_2.setMinimum(0.01)
+            self.param_2.setValue(c.LAPLACE_SCALE)
 
-        self.chart = PDFChart(
+        self.pdf_chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Laplace</small></center>
@@ -213,23 +220,26 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
                 "b": self.param_2.value(),
             }
         )
-        self.chart.plot_laplace()
-        self.chart_view.setChart(self.chart)
+        self.pdf_chart.plot_laplace()
+        self.chart_view.setChart(self.pdf_chart)
 
-        self.distribution_callback = self.distributions.get("Laplace")
+        self.distribution_callback = self.distributions.get(c.LAPLACE)
 
     def lognormal(self, update):
         if not update:
             self.__show_radio_buttons(False, True, True)
             self.__show_params(True, True, False, False)
-            self.param_1_label.setText("Parámetro de\nubicación:")
-            self.param_1.setMinimum(0)
-            self.param_2_label.setText("Parámetro de\nforma:")
+            self.param_1_label.setText(c.LOCATION)
+            self.param_1.setMinimum(-10)
+            self.param_1.setValue(c.LOGNORM_LOC)
+            self.param_2_label.setText(c.SHAPE)
             self.param_2.setMinimum(0.01)
-            self.param_3_label.setText("Parámetro de\nescala:")
-            self.param_3.setMinimum(0.01)
+            self.param_2.setValue(c.LOGNORM_SHAPE)
+            self.param_3_label.setText(c.SCALE)
+            self.param_3.setMinimum(-10)
+            self.param_3.setValue(c.LOGNORM_SCALE)
 
-        self.chart = PDFChart(
+        self.pdf_chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución Lognormal</small></center>
@@ -240,21 +250,23 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
                 "gamma": self.param_3.value(),
             }
         )
-        self.chart.plot_lognorm()
-        self.chart_view.setChart(self.chart)
+        self.pdf_chart.plot_lognorm()
+        self.chart_view.setChart(self.pdf_chart)
 
-        self.distribution_callback = self.distributions.get("Lognormal")
+        self.distribution_callback = self.distributions.get(c.LOGNORM)
 
     def norm(self, update):
         if not update:
             self.__show_radio_buttons(False, False, False)
             self.__show_params(True, True, False, False)
-            self.param_1_label.setText("Parámetro de\nubicación:")
+            self.param_1_label.setText(c.LOCATION)
             self.param_1.setMinimum(0)
-            self.param_2_label.setText("Parámetro de\nforma:")
+            self.param_1.setValue(c.NORM_LOC)
+            self.param_2_label.setText(c.SCALE)
             self.param_2.setMinimum(0.01)
+            self.param_2.setValue(c.NORM_SCALE)
 
-        self.chart = PDFChart(
+        self.pdf_chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución Normal</small></center>
@@ -264,21 +276,23 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
                 "sigma": self.param_2.value(),
             }
         )
-        self.chart.plot_norm()
-        self.chart_view.setChart(self.chart)
+        self.pdf_chart.plot_norm()
+        self.chart_view.setChart(self.pdf_chart)
 
-        self.distribution_callback = self.distributions.get("Normal")
+        self.distribution_callback = self.distributions.get(c.NORM)
 
     def rayleigh(self, update):
-        if "update" not in self.distributions.keys():
+        if not update:
             self.__show_radio_buttons(True, True, False)
             self.__show_params(True, False, False, False)
-            self.param_1_label.setText("Parámetro de\nescala:")
+            self.param_1_label.setText(c.SCALE)
             self.param_1.setMinimum(0.01)
-            self.param_2_label.setText("Parámetro de\nubicación:")
+            self.param_1.setValue(c.RAYLEIGH_SCALE)
+            self.param_2_label.setText(c.LOCATION)
             self.param_2.setMinimum(0)
+            self.param_2.setValue(c.RAYLEIGH_LOC)
 
-        self.chart = PDFChart(
+        self.pdf_chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Rayleigh</small></center>
@@ -288,19 +302,21 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
                 "lmbda": self.param_2.value(),
             }
         )
-        self.chart.plot_rayleigh()
-        self.chart_view.setChart(self.chart)
+        self.pdf_chart.plot_rayleigh()
+        self.chart_view.setChart(self.pdf_chart)
 
-        self.distribution_callback = self.distributions.get("Rayleigh")
+        self.distribution_callback = self.distributions.get(c.RAYLEIGH)
 
     def uniform(self, update):
         if not update:
             self.__show_radio_buttons(False, False, False)
             self.__show_params(True, True, False, False)
-            self.param_1_label.setText("Parámetro de\ncota inferior:")
-            self.param_2_label.setText("Parámetro de\ncota superior:")
+            self.param_1_label.setText(c.UNIFORM_INF_LABEL)
+            self.param_1.setValue(c.UNIFORM_INF)
+            self.param_2_label.setText(c.UNIFORM_SUP_LABEL)
+            self.param_2.setValue(c.UNIFORM_SUP)
 
-        self.chart = PDFChart(
+        self.pdf_chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución Uniforme</small></center>
@@ -310,34 +326,37 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
                 "sup": self.param_2.value(),
             }
         )
-        self.chart.plot_uniform()
-        self.chart_view.setChart(self.chart)
+        self.pdf_chart.plot_uniform()
+        self.chart_view.setChart(self.pdf_chart)
 
-        self.distribution_callback = self.distributions.get("Uniforme")
+        self.distribution_callback = self.distributions.get(c.UNIFORM)
 
     def weibull(self, update):
         if not update:
             self.__show_radio_buttons(False, True, True)
             self.__show_params(True, True, False, False)
-            self.param_1_label.setText("Parámetro de\nforma:")
-            self.param_1.setMinimum(0.15)
-            self.param_2_label.setText("Parámetro de\nescala:")
-            self.param_2.setMinimum(0.15)
-            self.param_3_label.setText("Parámetro de\nubicación:")
-            self.param_3.setMinimum(0.01)
+            self.param_1_label.setText(c.SHAPE)
+            self.param_1.setMinimum(0.1)
+            self.param_1.setValue(c.WEIBULL_SHAPE)
+            self.param_2_label.setText(c.SCALE)
+            self.param_2.setMinimum(0.01)
+            self.param_2.setValue(c.WEIBULL_SCALE)
+            self.param_3_label.setText(c.LOCATION)
+            self.param_3.setMinimum(0)
+            self.param_3.setValue(c.WEIBULL_LOC)
 
-        self.chart = PDFChart(
+        self.pdf_chart = PDFChart(
             title='''
                 Función de densidad de probabilidad
                 <center><small>Distribución de Weibull</small></center>
             ''',
             parameters={
-                "gamma": self.param_1.value(),
-                "alpha": self.param_2.value(),
-                "mu": self.param_3.value(),
+                "alpha": self.param_1.value(),
+                "beta": self.param_2.value(),
+                "gamma": self.param_3.value(),
             }
         )
-        self.chart.plot_weibull()
-        self.chart_view.setChart(self.chart)
+        self.pdf_chart.plot_weibull()
+        self.chart_view.setChart(self.pdf_chart)
 
-        self.distribution_callback = self.distributions.get("Weibull")
+        self.distribution_callback = self.distributions.get(c.WEIBULL)

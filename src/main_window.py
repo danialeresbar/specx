@@ -35,49 +35,47 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
             self.pdf_8,
             self.pdf_9
         ]
-
         self.channels = {
-            "channel_1": {
-                "id": 1,
-                "frequency": self.channel_1_label.text(),
+            'channel_1': {
+                'id': 1,
+                'frequency': self.channel_1_label.text(),
             },
-            "channel_2": {
-                "id": 2,
-                "frequency": self.channel_2_label.text(),
+            'channel_2': {
+                'id': 2,
+                'frequency': self.channel_2_label.text(),
             },
-            "channel_3": {
-                "id": 3,
-                "frequency": self.channel_3_label.text(),
+            'channel_3': {
+                'id': 3,
+                'frequency': self.channel_3_label.text(),
             },
-            "channel_4": {
-                "id": 4,
-                "frequency": self.channel_4_label.text(),
+            'channel_4': {
+                'id': 4,
+                'frequency': self.channel_4_label.text(),
             },
-            "channel_5": {
-                "id": 5,
-                "frequency": self.channel_5_label.text(),
+            'channel_5': {
+                'id': 5,
+                'frequency': self.channel_5_label.text(),
             },
-            "channel_6": {
-                "id": 6,
-                "frequency": self.channel_6_label.text(),
+            'channel_6': {
+                'id': 6,
+                'frequency': self.channel_6_label.text(),
             },
-            "channel_7": {
-                "id": 7,
-                "frequency": self.channel_7_label.text(),
+            'channel_7': {
+                'id': 7,
+                'frequency': self.channel_7_label.text(),
             },
-            "channel_8": {
-                "id": 8,
-                "frequency": self.channel_8_label.text(),
+            'channel_8': {
+                'id': 8,
+                'frequency': self.channel_8_label.text(),
             },
-            "channel_9": {
-                "id": 9,
-                "frequency": self.channel_9_label.text(),
+            'channel_9': {
+                'id': 9,
+                'frequency': self.channel_9_label.text(),
             },
         }
-
         self.generators = list()
 
-        manager.CONFIG["channels"] = self.channels.copy()
+        manager.CONFIG['channels'] = self.channels.copy()
 
         # Conexión de las señales de los menús
         self.new_action_menu.triggered.connect(self.__new_sim)
@@ -85,7 +83,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         self.about_action_menu.triggered.connect(self.__about)
         # self.help_action_menu.triggered.connect()
 
-        # Conexión de señales de los botones
+        # Conexión de las señales de los botones
         self.run_button.clicked.connect(self.__start_simulation)
         self.clean_button.clicked.connect(self.__reset_fields)
         self.save_file_button.clicked.connect(self.__save_config_file_as_json)
@@ -99,6 +97,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         self.run_button.setEnabled(True)
 
     def closeEvent(self, event):
+        """
+            Sobre-escritura del método closeEvent para el cierre de la ventana.
+        """
         # close = QtWidgets.QMessageBox.information(
         #     self,
         #     "Salir",
