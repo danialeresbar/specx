@@ -12,11 +12,10 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         super(SimWindow, self).__init__(*args)
         self.setupUi(self)
 
-        self.channels = kwargs.get('channels', None)
-        self.parameters = kwargs.get('parameters', None)
+        self.channels = kwargs.get(c.CHANNELS, None)
+        self.parameters = kwargs.get(c.PARAMETERS, None)
         self.generators = kwargs.get('generators', None)
-        self.simulation_filepath = f'../simulations/Simulation-\
-            {datetime.now().strftime("%m-%d-%Y-%H-%M-%S")}.csv'
+        self.simulation_filepath = f'{c.SIMULATIONS_PATH}Simulation-{datetime.now().strftime(c.DATE_FORMAT)}.csv'
         self.speed = 1
 
         self.__plot_views = [
@@ -31,8 +30,6 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
             self.chart_test_9,
         ]
 
-        self.__prepare_simulation()
-
         # Conexión de las señales de los botones
         self.start_button.clicked.connect(self.__start)
         self.play_button.clicked.connect(self.__resume)
@@ -44,6 +41,8 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         self.defaultt_time_speed_button.clicked.connect(self.__default_speed)
         self.save_chart_button.clicked.connect(self.save_chart)
         self.show_file_button.clicked.connect(self.show_outfile)
+
+        self.__prepare_simulation()
 
     def closeEvent(self, event):
         """
@@ -66,7 +65,7 @@ class SimWindow(QtWidgets.QMainWindow, Ui_sim_window):
         """Construye e inicializa los gráficos de la simulación."""
         index = 0
         for key, value in self.channels.items():
-            if value["distribution"].get("name") == "Bernoulli":
+            if value["distribution"].get('name') == c.BERNOULLI:
                 chart = LineChart(title="Canal {}".format(value.get("id")))
                 self.series.append(
                     chart.dynamic_line()

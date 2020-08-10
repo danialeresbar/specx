@@ -1,4 +1,5 @@
 # from decimal import Decimal
+import generators as gen
 
 
 # ---- Distribución de Bernoulli ----
@@ -62,7 +63,41 @@ WEIBULL_SCALE = 0.01445
 
 
 # ---- Errores ----
-JSON_SAVE_ERROR = 'Error al guardar el archivo con las configuraciones'
+FILE_OPEN_ERROR = 'El archivo fue eliminado o no existe!'
+JSON_SAVE_ERROR = 'No se pudo guardar el archivo con las configuraciones'
+JSON_LOAD_ERROR = 'Archivo de configuración no válido'
+
+
+# ---- Fechas ----
+DATE_FORMAT = "%m-%d-%Y-%H-%M-%S"
+
+
+# ---- Generadores ----
+GENERATORS = {
+            BERNOULLI: gen.bernoulli,
+            BETA: gen.beta,
+            GAMMA: gen.gamma,
+            GUMBEL: gen.gumbel,
+            LAPLACE: gen.laplace,
+            LOGNORM: gen.lognormal,
+            NORM: gen.normal,
+            RAYLEIGH: gen.rayleigh,
+            UNIFORM: gen.uniform,
+            WEIBULL: gen.weibull,
+        }
+
+
+# ---- Gráficos ----
+SERIES = 'series'
+
+
+# ---- Interfaz gráfica ----
+BOX_DEFAULT_ITEM = 'Selecciona'
+EXIT_MESSAGE = '¿Estás seguro que deseas salir?'
+FILE_LOADED = 'Archivo de configuración cargado'
+FILE_SAVED = 'Archivo de configuración guardado'
+LOAD_CONFIG = 'Cargar configuración'
+SAVE_CONFIG = 'Guardar configuración'
 
 
 # ---- Letras griegas ----
@@ -80,7 +115,30 @@ SCALE = 'Parámetro de\nescala:'
 SHAPE = 'Parámetro de\nforma:'
 
 
+# ---- Rutas ----
+PROJECT_PATH = '../'
+SETTINGS_PATH = f'{PROJECT_PATH}/config'
+SIMULATIONS_PATH = f'{PROJECT_PATH}/simulations/'
+
+
 # ---- Simulación ----
+CHANNELS = 'channels'
 DEFAULT_SPEED = 1
+ENERGY = 'energy'
 MAX_SPEED = 64
 MIN_SPEED = 1/MAX_SPEED
+PARAMETERS = 'parameters'
+SAMPLING = 'sampling'
+DEFAULT_SAMPLE_TIME = 5
+DEFAULT_THRESHOLD = 0.33
+THRESHOLD = 'threshold'
+USAGE = 'usage'
+SETTINGS_BODY = {
+    CHANNELS: dict(),
+    PARAMETERS: dict()
+}
+
+
+# ---- Variables Aleatorias ----
+MIN_VALUE = 0
+MAX_VALUE = 0.8

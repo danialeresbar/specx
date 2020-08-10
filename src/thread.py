@@ -1,3 +1,4 @@
+import constants as c
 from datetime import datetime, timedelta
 from PyQt5.QtCore import Qt
 import threading
@@ -8,10 +9,10 @@ class SimulationThread(threading.Thread):
     def __init__(self, target=None, name=None, args=(), kwargs=None):
         threading.Thread.__init__(self, target=target, name=name)
         self.channels = [
-            channel for channel in kwargs.get("channels").values()
+            channel for channel in kwargs.get(c.CHANNELS).values()
         ]
-        self.series = [serie for serie in kwargs.get("series")]
-        self.parameters = kwargs.get("parameters")
+        self.series = [serie for serie in kwargs.get(c.SERIES)]
+        self.parameters = kwargs.get(c.PARAMETERS)
         self.generators = kwargs.get("generators")
         self.wait = target
         self.callback_exit = kwargs.get("callback")
@@ -24,31 +25,31 @@ class SimulationThread(threading.Thread):
         self.finish_flag = True
 
     def run(self):
-        '''Generación de Variables aleatorias y actualización de gráficas'''
+        """Generación de Variables aleatorias y actualización de gráficas"""
         bars = self.series[-1]
         delta = datetime.now()
         index = 0
-        limit = self.parameters.get("sampling")*10
+        limit = self.parameters.get(c.SAMPLING)*10
 
         for channel in self.channels:
             generator = self.generators[index]
             serie = self.series[index]
             usage_percent = 0
-            var_counter = 0
+            var_count = 0
 
-            while(var_counter < limit and not self.stopped):
-                var = generator(channel["distribution"].get("parameters"))
-                var_counter += 1
-                self.__update_chart(serie, var_counter*2, var)
+            while(var_count < limit and not self.stopped):
+                var = generator(channel['distribution'].get(c.PARAMETERS))
+                var_count += 1
+                self.__update_chart(serie, var_count*2, var)
                 self.__update_outfile(
                     delta,
-                    channel.get("frequency"),
-                    channel["distribution"].get("name"),
+                    channel.get('frequency'),
+                    channel['distribution'].get('name'),
                     var
                 )
                 time.sleep(2/self.wait())  # Delta entre la generación de VAs
                 delta += timedelta(seconds=2)
-                if var >= self.parameters.get("threshold"):
+                if var >= self.parameters.get(c.THRESHOLD):
                     usage_percent += 1
                 with self.pause_cond:
                     while self.paused:
@@ -57,7 +58,7 @@ class SimulationThread(threading.Thread):
                 if self.stopped:
                     self.finish_flag = False
                     break
-            self.__update_bars(bars[index], (usage_percent/var_counter)*100)
+            self.__update_bars(bars[index], (usage_percent/var_count)*100)
             index += 1
 
         self.callback_exit(self.finish_flag)
@@ -84,7 +85,8 @@ class SimulationThread(threading.Thread):
     def __update_chart(self, serie, x, y):
         serie.append(x, y)
         if x >= 12:
-            dx = serie.chart().plotArea().width() / serie.chart().axes(Qt.Horizontal, serie)[0].tickCount()
+            dx = serie.chart().plotArea().width() / \
+                serie.chart().axes(Qt.Horizontal, serie)[0].tickCount()
             serie.chart().scroll(dx, 0)
 
     def __update_bars(self, bar, usage_percent):
@@ -106,18 +108,14 @@ class SimulationThread(threading.Thread):
 class FileThread(threading.Thread):
     def __init__(self, target=None, name=None, args=(), kwargs=None):
         threading.Thread.__init__(self, target=target, name=name)
-        self.filepath = kwargs.get("filepath")
+        self.filepath = kwargs.get('filepath')
 
     def run(self):
-        '''Abre una instancia de un archivo'''
+        """Abre una instancia de un archivo"""
         import os
         import subprocess
-        path = "{}{}{}".format(
-            os.getcwd(),
-            os.path.sep,
-            self.filepath
-        )
+        path = f'{os.getcwd()}{os.path.sep}{self.filepath}'
         try:
             subprocess.call(path, shell=True)
         except Exception:
-            print("El archivo fue eliminado o no existe!")
+            print(c.FILE_OPEN_ERROR)

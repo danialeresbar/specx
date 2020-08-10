@@ -1,4 +1,4 @@
-from decimal import Decimal
+# from decimal import Decimal
 import math as mt
 import numpy as np
 from scipy import stats
@@ -15,7 +15,7 @@ SEED_2 = time.time()*1000
 
 
 def cong_mixto_posix():
-    '''Generador congruencial usado por JAVA y POSIX'''
+    """Generador congruencial usado por JAVA y POSIX"""
     global SEED_1
     a = 25214903917
     m = (2**48) - 1
@@ -24,7 +24,7 @@ def cong_mixto_posix():
 
 
 def cong_mixto_gcc():
-    '''Generador congruencial usado por gcc'''
+    """Generador congruencial usado por gcc"""
     global SEED_2
     a = 1103515245
     m = (2**31) - 1
