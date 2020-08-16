@@ -17,11 +17,11 @@
             "id": 2,
             "frequency": "479 MHz",
             "distribution": {
-                "name": "Gumbel max",
+                "name": "Weibull",
                 "parameters": [
-                    0.5,
-                    0.04929,
-                    0.0,
+                    7.1476,
+                    0.58176,
+                    -0.01445,
                     0.0
                 ]
             }
@@ -29,32 +29,6 @@
         "channel_3": {
             "id": 3,
             "frequency": "485 MHz",
-            "distribution": {
-                "name": "Laplace",
-                "parameters": [
-                    0.56898,
-                    0.11365703,
-                    0.0,
-                    0.0
-                ]
-            }
-        },
-        "channel_4": {
-            "id": 4,
-            "frequency": "491 MHz",
-            "distribution": {
-                "name": "Rayleigh",
-                "parameters": [
-                    0.1003,
-                    0.0,
-                    0.0,
-                    0.0
-                ]
-            }
-        },
-        "channel_5": {
-            "id": 5,
-            "frequency": "497 MHz",
             "distribution": {
                 "name": "Gamma",
                 "parameters": [
@@ -65,14 +39,40 @@
                 ]
             }
         },
+        "channel_4": {
+            "id": 4,
+            "frequency": "491 MHz",
+            "distribution": {
+                "name": "Laplace",
+                "parameters": [
+                    0.56898,
+                    0.11365703,
+                    0.0,
+                    0.0
+                ]
+            }
+        },
+        "channel_5": {
+            "id": 5,
+            "frequency": "497 MHz",
+            "distribution": {
+                "name": "Gumbel max",
+                "parameters": [
+                    0.5,
+                    0.04929,
+                    0.0,
+                    0.0
+                ]
+            }
+        },
         "channel_6": {
             "id": 6,
             "frequency": "503 MHz",
             "distribution": {
-                "name": "Lognormal",
+                "name": "Rayleigh",
                 "parameters": [
-                    1.86636,
-                    0.01758,
+                    0.1003,
+                    0.0,
                     0.0,
                     0.0
                 ]
@@ -95,11 +95,11 @@
             "id": 8,
             "frequency": "551 MHz",
             "distribution": {
-                "name": "Weibull",
+                "name": "Lognormal",
                 "parameters": [
-                    7.1476,
-                    0.01445,
-                    0.58176,
+                    1.86636,
+                    0.01758,
+                    -5.8362,
                     0.0
                 ]
             }
@@ -111,8 +111,8 @@
                 "name": "Weibull",
                 "parameters": [
                     7.1476,
-                    0.01445,
-                    0.0,
+                    0.58176,
+                    -0.01445,
                     0.0
                 ]
             }
