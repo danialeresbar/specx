@@ -10,45 +10,42 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)  # Construye la interfaz diseñada con qt
 
-        self.__boxes = [self.pdf_1, self.pdf_2, self.pdf_3, self.pdf_4,
-                        self.pdf_5, self.pdf_6, self.pdf_7, self.pdf_8,
-                        self.pdf_9]
         self.channels = {
             'channel_1': {
                 'id': 1,
-                'frequency': self.channel_1_label.text(),
+                'frequency': self.label_channel_1.text(),
             },
             'channel_2': {
                 'id': 2,
-                'frequency': self.channel_2_label.text(),
+                'frequency': self.label_channel_2.text(),
             },
             'channel_3': {
                 'id': 3,
-                'frequency': self.channel_3_label.text(),
+                'frequency': self.label_channel_3.text(),
             },
             'channel_4': {
                 'id': 4,
-                'frequency': self.channel_4_label.text(),
+                'frequency': self.label_channel_4.text(),
             },
             'channel_5': {
                 'id': 5,
-                'frequency': self.channel_5_label.text(),
+                'frequency': self.label_channel_5.text(),
             },
             'channel_6': {
                 'id': 6,
-                'frequency': self.channel_6_label.text(),
+                'frequency': self.label_channel_6.text(),
             },
             'channel_7': {
                 'id': 7,
-                'frequency': self.channel_7_label.text(),
+                'frequency': self.label_channel_7.text(),
             },
             'channel_8': {
                 'id': 8,
-                'frequency': self.channel_8_label.text(),
+                'frequency': self.label_channel_8.text(),
             },
             'channel_9': {
                 'id': 9,
-                'frequency': self.channel_9_label.text(),
+                'frequency': self.label_channel_9.text(),
             },
         }
         self.generators = list()
@@ -61,13 +58,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         self.help_action_menu.triggered.connect(self.__help)
 
         # Conexión de las señales de los botones
-        self.run_button.clicked.connect(self.__start_simulation)
-        self.clean_button.clicked.connect(self.__reset_fields)
-        self.save_file_button.clicked.connect(self.__save_config_file_as_json)
-        self.load_file_button.clicked.connect(self.__load_config_file)
+        self.btn_simulator.clicked.connect(self.__start_simulation)
+        self.btn_clean.clicked.connect(self.__reset_fields)
+        self.btn_save_file.clicked.connect(self.__save_config_file_as_json)
+        self.btn_load_file.clicked.connect(self.__load_config_file)
 
         # Conexión de los ComboBox al modal de parametrización
-        for box in self.__boxes:
+        for box in self.boxes:
             box.activated.connect(self.__raise_modal)
 
     def __about(self):
@@ -99,7 +96,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         for channel, content in self.channels.items():
             index = content.get('id')
             distribution = content.get('distribution')
-            box = self.__boxes[index - 1]
+            box = self.boxes[index - 1]
             if distribution:
                 box.setCurrentText(
                     distribution.get('name', c.BOX_DEFAULT_ITEM)
@@ -128,14 +125,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         }
 
     def __raise_modal(self):
-        for box in self.__boxes:
+        for box in self.boxes:
             if self.sender() == box:
                 box_selected = box
 
         modal = ConfigDialog(self, distribution=box_selected.currentText())
         modal.exec()
         if modal.result() == 1:
-            channel_id = self.__boxes.index(box_selected) + 1
+            channel_id = self.boxes.index(box_selected) + 1
             for channel, content in self.channels.items():
                 if channel_id == content['id']:
                     content['distribution'] = {
@@ -155,7 +152,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
     def __reset_fields(self):
         self.sample_time.setValue(c.DEFAULT_SAMPLE_TIME)
         self.threshold.setValue(c.DEFAULT_THRESHOLD)
-        for box in self.__boxes:
+        for box in self.boxes:
             box.setCurrentIndex(0)
         self.__check_boxes()
 
@@ -211,11 +208,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
                 )
 
     def __check_boxes(self):
-        for box in self.__boxes:
-            if box.currentIndex() == 0:
-                self.run_button.setEnabled(False)
+        for box in self.boxes:
+            if box.currentIndex() == -1:  # -1 es el index del placeholder
+                self.btn_simulator.setEnabled(False)
                 return
-        self.run_button.setEnabled(True)
+        self.btn_simulator.setEnabled(True)
 
 
 # Arranque de la aplicación

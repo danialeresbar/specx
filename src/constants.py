@@ -19,8 +19,8 @@ BETA_SCALE = 0.75
 # ---- Distribución Gamma ----
 GAMMA = 'Gamma'
 GAMMA_SHAPE = 7.0259
-GAMMA_LOC = 0.02008
-GAMMA_SCALE = 0
+GAMMA_LOC = 0
+GAMMA_SCALE = 0.02008
 
 # ---- Distribución de Gumbel ----
 GUMBEL = 'Gumbel max'
@@ -60,6 +60,16 @@ WEIBULL = 'Weibull'
 WEIBULL_SHAPE = 7.1476
 WEIBULL_LOC = 0.58176
 WEIBULL_SCALE = 0.01445
+
+
+# ---- Distribuciones ----
+FIRST_PARAMETER = 'Parámetro 1:'
+SECOND_PARAMETER = 'Parámetro 2:'
+THIRD_PARAMETER = 'Parámetro 3:'
+FOURTH_PARAMETER = 'Parámetro 4:'
+ONE_PARAMETER = '1P'
+TWO_PARAMETERS = '2P'
+THREE_PARAMETERS = '3P'
 
 
 # ---- Errores ----

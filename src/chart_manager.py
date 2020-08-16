@@ -9,18 +9,10 @@ from PyQt5.QtChart import (
     QAbstractBarSeries,
     QLegend,
     QLineSeries,
-    QSplineSeries,
+    QSplineSeries
 )
-from PyQt5.QtCore import (
-    Qt,
-    QEasingCurve,
-    QMargins
-)
-from PyQt5.QtGui import (
-    QFont,
-    QColor,
-    QColorConstants
-)
+from PyQt5.QtCore import Qt, QMargins
+from PyQt5.QtGui import QColor, QColorConstants, QFont
 import scipy.stats as stats
 
 
@@ -315,7 +307,6 @@ class LineChart(QChart):
         self.setBackgroundRoundness(0)
         self.setTitle(self.title)
         self.setMargins(QMargins(10, 10, 10, 10))
-        self.setAnimationEasingCurve(QEasingCurve.Linear)
         self.setAnimationOptions(QChart.NoAnimation)
         self.setTheme(self.ChartThemeLight)
 
