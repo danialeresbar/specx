@@ -346,7 +346,7 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.parameter_spbox_2.setMinimum(0.01)
             self.parameter_spbox_2.setValue(c.WEIBULL_SCALE)
             self.parameter_label_3.setText(c.LOCATION)
-            self.parameter_spbox_3.setMinimum(0)
+            self.parameter_spbox_3.setMinimum(-10)
             self.parameter_spbox_3.setValue(c.WEIBULL_LOC)
 
         self.pdf_chart = PDFChart(

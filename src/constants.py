@@ -58,8 +58,8 @@ UNIFORM_SUP = 0.61845
 # ---- Distribución de Weibull ----
 WEIBULL = 'Weibull'
 WEIBULL_SHAPE = 7.1476
-WEIBULL_LOC = 0.58176
-WEIBULL_SCALE = 0.01445
+WEIBULL_LOC = -0.01445
+WEIBULL_SCALE = 0.58176
 
 
 # ---- Distribuciones ----
@@ -73,6 +73,7 @@ THREE_PARAMETERS = '3P'
 
 
 # ---- Errores ----
+CHART_SAVE_ERROR = 'No se pudo guardar el gráfico'
 FILE_OPEN_ERROR = 'El archivo fue eliminado o no existe!'
 JSON_SAVE_ERROR = 'No se pudo guardar el archivo con las configuraciones'
 JSON_LOAD_ERROR = 'Archivo de configuración no válido'
@@ -98,6 +99,8 @@ GENERATORS = {
 
 
 # ---- Gráficos ----
+SAVE_CHART = 'Guardar gráfico'
+SAVE_CHART_MSG = 'Gráfico guardado con éxito'
 SERIES = 'series'
 
 
@@ -132,6 +135,8 @@ SIMULATIONS_PATH = f'{PROJECT_PATH}/simulations/'
 
 
 # ---- Simulación ----
+CHARTVIEWS = 10
+CHARTVIEWS_DISTRIBUTION = 3
 CHANNELS = 'channels'
 DEFAULT_SPEED = 1
 ENERGY = 'energy'

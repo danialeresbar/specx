@@ -80,9 +80,6 @@ class PDFChart(QChart):
             f'{c.ALPHA_LETTER}={alpha:.4f}, {c.LAMBDA_LETTER}={lmbda:.4f}, \
                 {c.GAMMA_LETTER}={gamma:.4f}'
         )
-        serie.setName(
-            "α={:.4f}, λ={:.4f}, γ={:.4f}".format(alpha, lmbda, gamma)
-        )
         self.add_spline_series(serie, x, y)
 
     def plot_gumbel(self):
@@ -197,7 +194,6 @@ class PDFChart(QChart):
             f'{c.ALPHA_LETTER}={alpha:.4f}, {c.BETA_LETTER}={beta:.4f}, \
                 {c.GAMMA_LETTER}={gamma:.4f}'
         )
-        serie.setName("α={:.4f}, β={:.4f}, γ={:.4f}".format(alpha, beta, gamma))
         self.add_spline_series(serie, x, y)
 
     def add_spline_series(self, serie, x, y):

@@ -146,7 +146,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
                     manager.SETTINGS[c.CHANNELS][channel] = content.copy()
             del modal.parameters_values[:]
         else:
-            self.sender().setCurrentIndex(0)
+            self.sender().setCurrentIndex(-1)
         self.__check_boxes()
 
     def __reset_fields(self):

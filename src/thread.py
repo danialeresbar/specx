@@ -29,7 +29,7 @@ class SimulationThread(threading.Thread):
         bars = self.series[-1]
         delta = datetime.now()
         index = 0
-        limit = self.parameters.get(c.SAMPLING)*10
+        limit = self.parameters.get(c.SAMPLING)*30
 
         for channel in self.channels:
             generator = self.generators[index]
