@@ -153,7 +153,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         self.sample_time.setValue(c.DEFAULT_SAMPLE_TIME)
         self.threshold.setValue(c.DEFAULT_THRESHOLD)
         for box in self.boxes:
-            box.setCurrentIndex(0)
+            box.setCurrentIndex(-1)
         self.__check_boxes()
 
     def __start_simulation(self):

@@ -123,10 +123,10 @@ class ConfigDialog(Ui_config_dialog, QtWidgets.QDialog):
             self.parameter_label_2.setText(c.BETA_SHAPE_2_LABEL)
             self.parameter_spbox_2.setMinimum(0.01)
             self.parameter_spbox_2.setValue(c.BETA_SHAPE_2)
-            self.parameter_label_3.setText(c.SHAPE)
+            self.parameter_label_3.setText(c.LOCATION)
             self.parameter_spbox_3.setMinimum(-1000)
             self.parameter_spbox_3.setValue(c.BETA_LOC)
-            self.parameter_label_4.setText(c.LOCATION)
+            self.parameter_label_4.setText(c.SCALE)
             self.parameter_spbox_4.setMinimum(0.01)
             self.parameter_spbox_4.setValue(c.BETA_SCALE)
 
