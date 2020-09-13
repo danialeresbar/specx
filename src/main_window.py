@@ -211,8 +211,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_main_window):
         for box in self.boxes:
             if box.currentIndex() == -1:  # -1 es el index del placeholder
                 self.btn_simulator.setEnabled(False)
+                self.btn_save_file.setEnabled(False)
                 return
         self.btn_simulator.setEnabled(True)
+        self.btn_save_file.setEnabled(True)
 
 
 # Arranque de la aplicación

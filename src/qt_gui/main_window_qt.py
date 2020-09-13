@@ -633,6 +633,7 @@ class Ui_main_window(object):
         self.btn_save_file.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_save_file.setObjectName("btn_save_file")
+        self.btn_save_file.setEnabled(False)
         self.foot_layout.addWidget(self.btn_save_file)
 
         self.btn_load_file = QtWidgets.QPushButton(
