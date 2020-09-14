@@ -110,6 +110,7 @@ EXIT_MESSAGE = '¿Estás seguro que deseas salir?'
 FILE_LOADED = 'Archivo de configuración cargado'
 FILE_SAVED = 'Archivo de configuración guardado'
 LOAD_CONFIG = 'Cargar configuración'
+PREVIEW = 'Vista previa'
 SAVE_CONFIG = 'Guardar configuración'
 
 
@@ -123,6 +124,7 @@ SIGMA_LETTER = 'σ'
 
 
 # ---- Parámetros ----
+PARAMETRIZATION = 'Parametrización'
 LOCATION = 'Parámetro de\nubicación:'
 SCALE = 'Parámetro de\nescala:'
 SHAPE = 'Parámetro de\nforma:'
@@ -130,8 +132,12 @@ SHAPE = 'Parámetro de\nforma:'
 
 # ---- Rutas ----
 PROJECT_PATH = '../'
+ICONS_PATH = f'{PROJECT_PATH}/icons/'
 SETTINGS_PATH = f'{PROJECT_PATH}/config'
 SIMULATIONS_PATH = f'{PROJECT_PATH}/simulations/'
+MODAL_ICON_PATH = f'{ICONS_PATH}bars.svg'
+REJECT_ICON_PATH = f'{ICONS_PATH}reject.svg'
+SUBMIT_ICON_PATH = f'{ICONS_PATH}submit.svg'
 
 
 # ---- Simulación ----
